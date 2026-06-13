@@ -17,21 +17,9 @@ pub(all) enum Token {
   Partial(String)
   /// 注释 {{!comment}}
   Comment(String)
-} derive(Debug, Eq)
+} derive(Show, Debug, Eq)
 
-///|
-impl Show for Token with fn output(self, logger) {
-  match self {
-    Text(s) => logger.write_string("Text(\{s})")
-    Variable(s) => logger.write_string("Variable(\{s})")
-    RawVariable(s) => logger.write_string("RawVariable(\{s})")
-    SectionOpen(s) => logger.write_string("SectionOpen(\{s})")
-    SectionClose(s) => logger.write_string("SectionClose(\{s})")
-    InvertedOpen(s) => logger.write_string("InvertedOpen(\{s})")
-    Partial(s) => logger.write_string("Partial(\{s})")
-    Comment(s) => logger.write_string("Comment(\{s})")
-  }
-}
+
 
 ///|
 /// 语法树节点，由 parser 根据 token 序列构建
@@ -44,21 +32,9 @@ pub(all) enum Node {
   SectionNode(String, Array[Node], Bool)
   /// 局部模板 (名称, 缩进前缀)
   PartialNode(String, String)
-} derive(Debug, Eq)
+} derive(Show, Debug, Eq)
 
-///|
-impl Show for Node with fn output(self, logger) {
-  match self {
-    TextNode(s) => logger.write_string("TextNode(\{s})")
-    VarNode(s, b) => logger.write_string("VarNode(\{s}, \{b})")
-    SectionNode(s, children, b) => {
-      logger.write_string("SectionNode(\{s}, ")
-      Show::output(children, logger)
-      logger.write_string(", \{b})")
-    }
-    PartialNode(s1, s2) => logger.write_string("PartialNode(\{s1}, \{s2})")
-  }
-}
+
 
 ///|
 /// 编译后的模板对象，可重复渲染

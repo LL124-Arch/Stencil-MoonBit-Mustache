@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { margin: 15mm; }
+  body {
+      font-family: "Microsoft YaHei", "SimHei", sans-serif;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: #000;
+  }
+  h1 { font-size: 19px; margin-top: 0; margin-bottom: 8px; text-align: center; }
+  h2 { font-size: 16px; margin-top: 12px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  p, ul, ol { margin-top: 4px; margin-bottom: 4px; }
+  li { margin-bottom: 2px; }
+  strong { color: #222; }
+  code { font-family: Consolas, monospace; background: #f4f4f4; padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<h1>第八届 CCF 开源创新大赛 - 选题申报书</h1>
+
+<p>
+<strong>项目名称：</strong> Stencil - 基于 MoonBit 的轻量级高性能原生模板引擎<br>
+<strong>参赛方向：</strong> 生态库移植<br>
+<strong>参考规范：</strong> Mustache 官方核心规范 (mustache.github.io)<br>
+**开源协议：** Apache-2.0<br>
+<strong>申报账号：</strong> LL124-Arch / lll15362196148<br><strong>GitHub 仓库：</strong> <a href="https://github.com/LL124-Arch/Stencil-MoonBit-Mustache-">https://github.com/LL124-Arch/Stencil-MoonBit-Mustache-</a><br><strong>GitLink 仓库：</strong> <a href="https://www.gitlink.org.cn/lll15362196148/stencil">https://www.gitlink.org.cn/lll15362196148/stencil</a>
+</p>
+
+<h2>一、 选题背景与意义</h2>
+<p><strong>痛点：</strong> 随着 WebAssembly (WASM) 技术的普及，MoonBit 凭借其编译速度与运行时性能备受瞩目。然而，目前官方生态 (<code>mooncakes.io</code>) 中依然缺乏一个生产可用的原生模板引擎，导致 Web 开发中动态页面生成极为不便，削弱了开发体验。</p>
+<p><strong>价值：</strong> 本项目旨在填补该空白，完全采用 MoonBit 原生开发 Mustache 风格的模板引擎。它<strong>零外部依赖</strong>，直接编译成 WASM，具有超小体积和极致性能，完美适用于 Serverless 计算与边缘渲染。</p>
+
+<h2>二、 核心功能</h2>
+<p>本项目遵循 Mustache 逻辑分离语法，提供以下完整功能：</p>
+<ol>
+<li><strong>安全插值与防 XSS：</strong> 默认自动对 <code>{{var}}</code> 进行 HTML 实体转义，同时支持三括号 <code>{{{var}}}</code> 原始输出。</li>
+<li><strong>多态区块渲染：</strong> 根据 JSON 数据类型自动派发渲染逻辑。支持 <code>{{#section}}</code> 条件判断、隐式列表迭代以及作用域潜入。</li>
+<li><strong>反转区块处理：</strong> <code>{{^section}}</code> 能够精准处理 <code>null</code>、<code>false</code>、空数组及空字符串等假值场景。</li>
+<li><strong>局部模板复用 (<code>{{>partial}}</code>)：</strong> 支持模板互相嵌套，<strong>自带智能缩进对齐引擎</strong>，确保最终输出格式美观。</li>
+<li><strong>内联注释支持：</strong> 提供 <code>{{!comment}}</code> 机制标识开发说明，引擎自动忽略。</li>
+</ol>
+
+<h2>三、 系统架构设计</h2>
+<p>Stencil 遵循编译原理标准流程，由四大核心模块解耦构成：</p>
+<ol>
+<li><strong>滑动窗口 Scanner：</strong> 摒弃正则，基于双指针游标算法快速提取标签，实现极低 GC 负担。</li>
+<li><strong>递归下降 Parser：</strong> 将词法流转换为层次分明的抽象语法树 (AST)，遇错时利用最新 <code>raise</code> 机制精准抛出。</li>
+<li><strong>双端求值 Context：</strong> 采用栈式数据管理器，支持以点号（<code>.</code>）分隔的多级路径深层查找。</li>
+<li><strong>深度遍历 Render：</strong> 结合 AST 与上下文栈，利用 <code>StringBuilder</code> 实现高速渲染和自动化缩进铺平。</li>
+</ol>
+
+<h2>四、 核心技术优势</h2>
+<ol>
+<li><strong>纯正多包架构：</strong> 采用高级的 <code>src</code> (核心库) 与 <code>cli</code> (终端应用) 分包设计，代码结构远比扁平铺设更具扩展性和工业水准。</li>
+<li><strong>现代化类型安全：</strong> 全面应用 MoonBit 新引入的 <code>suberror</code> 异常流，杜绝栈溢出等解析风险，安全可靠。</li>
+<li><strong>高质量工程沉淀：</strong> 内置 30 余个高覆盖率测试用例（<code>moon test</code> 全绿），全部代码经 <code>moon fmt</code> 严格约束，展现出优秀的开源标准。</li>
+</ol>
+
+</body>
+</html>
+

@@ -119,7 +119,7 @@ moon test
 
 ### Run demo | 运行示例
 ```bash
-moon run cmd/main
+moon run cli
 ```
 
 ---
