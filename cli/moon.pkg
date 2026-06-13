@@ -1,0 +1,7 @@
+import {
+  "LL124-Arch/stencil/src" @lib,
+}
+
+options(
+  "is-main": true,
+)
