@@ -17,7 +17,7 @@ pub(all) enum Token {
   Partial(String)
   /// 注释 {{!comment}}
   Comment(String)
-} derive(Show, Debug, Eq)
+} derive(Debug, Eq)
 
 
 
@@ -32,7 +32,7 @@ pub(all) enum Node {
   SectionNode(String, Array[Node], Bool)
   /// 局部模板 (名称, 缩进前缀)
   PartialNode(String, String)
-} derive(Show, Debug, Eq)
+} derive(Debug, Eq)
 
 
 
@@ -50,3 +50,13 @@ pub struct Template {
 pub(all) suberror TemplateError {
   TemplateError(String)
 } derive(Debug)
+
+///|
+impl Show for Token with output(self, logger) {
+  Show::output(self.to_string(), logger)
+}
+
+///|
+impl Show for Node with output(self, logger) {
+  Show::output(self.to_string(), logger)
+}

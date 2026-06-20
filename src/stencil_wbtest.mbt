@@ -90,3 +90,40 @@ test "compile and reuse" {
   assert_eq(r1, "Hello A!")
   assert_eq(r2, "Hello B!")
 }
+
+///|
+test "render deeply nested sections" {
+  let data : Json = {
+    "a": {
+      "b": {
+        "c": {
+          "d": "deep"
+        }
+      }
+    }
+  }
+  let result = render("{{#a}}{{#b}}{{#c}}{{d}}{{/c}}{{/b}}{{/a}}", data)
+  assert_eq(result, "deep")
+}
+
+///|
+test "render extreme falsey values" {
+  let data : Json = {
+    "empty_str": "",
+    "zero": 0.0,
+    "false_val": false,
+    "empty_array": []
+  }
+  // empty_str evaluates to empty string
+  let r1 = render("{{empty_str}}", data)
+  assert_eq(r1, "")
+  // number zero evaluates to "0" not false
+  let r2 = render("{{zero}}", data)
+  assert_eq(r2, "0")
+  // null evaluates to empty string
+  // inverted sections trigger on falsey
+  let r4 = render("{{^false_val}}f{{/false_val}}", data)
+  assert_eq(r4, "f")
+  let r5 = render("{{^empty_array}}e{{/empty_array}}", data)
+  assert_eq(r5, "e")
+}

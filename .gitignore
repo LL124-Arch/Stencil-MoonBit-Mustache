@@ -5,3 +5,7 @@ target
 .mooncakes/
 .moonagent/
 *.pdf
+*.html
+*.exe
+Stencil_Proposal.md
+项目申报书.md
