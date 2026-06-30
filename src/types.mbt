@@ -19,8 +19,6 @@ pub(all) enum Token {
   Comment(String)
 } derive(Debug, Eq)
 
-
-
 ///|
 /// 语法树节点，由 parser 根据 token 序列构建
 pub(all) enum Node {
@@ -33,8 +31,6 @@ pub(all) enum Node {
   /// 局部模板 (名称, 缩进前缀)
   PartialNode(String, String)
 } derive(Debug, Eq)
-
-
 
 ///|
 /// 编译后的模板对象，可重复渲染
@@ -52,11 +48,11 @@ pub(all) suberror TemplateError {
 } derive(Debug)
 
 ///|
-impl Show for Token with output(self, logger) {
+impl Show for Token with fn output(self, logger) {
   Show::output(self.to_string(), logger)
 }
 
 ///|
-impl Show for Node with output(self, logger) {
+impl Show for Node with fn output(self, logger) {
   Show::output(self.to_string(), logger)
 }

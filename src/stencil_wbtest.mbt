@@ -93,15 +93,7 @@ test "compile and reuse" {
 
 ///|
 test "render deeply nested sections" {
-  let data : Json = {
-    "a": {
-      "b": {
-        "c": {
-          "d": "deep"
-        }
-      }
-    }
-  }
+  let data : Json = { "a": { "b": { "c": { "d": "deep" } } } }
   let result = render("{{#a}}{{#b}}{{#c}}{{d}}{{/c}}{{/b}}{{/a}}", data)
   assert_eq(result, "deep")
 }
@@ -112,7 +104,7 @@ test "render extreme falsey values" {
     "empty_str": "",
     "zero": 0.0,
     "false_val": false,
-    "empty_array": []
+    "empty_array": [],
   }
   // empty_str evaluates to empty string
   let r1 = render("{{empty_str}}", data)

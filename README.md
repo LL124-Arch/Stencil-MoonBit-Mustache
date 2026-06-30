@@ -1,7 +1,8 @@
-﻿# Stencil
+# Stencil
 
 [![MoonBit](https://img.shields.io/badge/Language-MoonBit-orange.svg)](https://www.moonbitlang.cn/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
 
 **Stencil** is a lightweight, high-performance, original template engine for the **MoonBit** programming language. It supports Mustache-style template syntax, offering a flexible and clean way to separate logic and presentation in your applications.
 
