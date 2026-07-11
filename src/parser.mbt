@@ -1,14 +1,12 @@
 ///|
-/// 语法分析器：将 Token 序列构建为 Node 语法树
-/// 主要处理 Section 的嵌套匹配
+/// Build the template AST from the scanned token stream.
 pub fn parse(tokens : Array[Token]) -> Array[Node] raise TemplateError {
   let result = parse_inner(tokens, 0, "")
   result.0
 }
 
 ///|
-/// 递归解析，返回 (节点列表, 消耗的 token 数量)
-/// until 参数指定当前层级的终止 section 名称，空字符串表示顶层
+/// Recursively parse nested sections until `until` is closed.
 fn parse_inner(
   tokens : Array[Token],
   start : Int,
@@ -31,15 +29,12 @@ fn parse_inner(
         nodes.push(VarNode(name, false))
         i = i + 1
       }
-      Comment(_) =>
-        // 注释不生成节点
-        i = i + 1
+      Comment(_) => i = i + 1
       Partial(name) => {
-        nodes.push(PartialNode(name, ""))
+        nodes.push(PartialNode(name, take_partial_indent(nodes)))
         i = i + 1
       }
       SectionOpen(name) => {
-        // 递归解析直到匹配的 SectionClose
         let inner = parse_inner(tokens, i + 1, name)
         let children = inner.0
         let consumed = inner.1
@@ -55,21 +50,85 @@ fn parse_inner(
       }
       SectionClose(name) => {
         if until.length() == 0 {
-          raise TemplateError("意外的关闭标签: \{name}")
+          raise TemplateError("unexpected closing tag: \{name}")
         }
         if name != until {
           raise TemplateError(
-            "标签不匹配: 期望 \{until}，实际 \{name}",
+            "section close mismatch: expected \{until}, got \{name}",
           )
         }
-        // +1 是为了跳过这个 close 标签本身
         return (nodes, i - start + 1)
       }
     }
   }
-  // 如果还在等待关闭标签但已经到末尾了
   if until.length() > 0 {
-    raise TemplateError("未关闭的区块: \{until}")
+    raise TemplateError("unclosed section: \{until}")
   }
   (nodes, i - start)
+}
+
+///|
+/// Standalone partials inherit indentation from the previous line prefix.
+fn take_partial_indent(nodes : Array[Node]) -> String {
+  if nodes.length() == 0 {
+    return ""
+  }
+  let last = nodes[nodes.length() - 1]
+  match last {
+    TextNode(text) => {
+      let indent = trailing_line_indent(text)
+      if indent.length() == 0 {
+        return ""
+      }
+      let kept = substring(text, 0, text.length() - indent.length())
+      if kept.length() == 0 {
+        let _ = nodes.pop()
+      } else {
+        nodes[nodes.length() - 1] = TextNode(kept)
+      }
+      indent
+    }
+    _ => ""
+  }
+}
+
+///|
+/// Return the whitespace suffix that forms the indentation of the current line.
+fn trailing_line_indent(text : String) -> String {
+  if text.length() == 0 {
+    return ""
+  }
+  let mut line_start = 0
+  let mut i = text.length() - 1
+  while i >= 0 {
+    let ch = char_at(text, i)
+    if ch == '\n' || ch == '\r' {
+      line_start = i + 1
+      break
+    }
+    if i == 0 {
+      line_start = 0
+      break
+    }
+    i = i - 1
+  }
+  let suffix = substring(text, line_start, text.length())
+  if suffix.length() == 0 {
+    return ""
+  }
+  let mut only_indent = true
+  for idx = 0; idx < suffix.length(); idx = idx + 1 {
+    let ch = char_at(suffix, idx)
+    if ch != ' ' && ch != '\t' {
+      only_indent = false
+      break
+    }
+  }
+  if !only_indent {
+    return ""
+  }
+  if line_start == 0 && suffix.length() != text.length() {
+    return ""
+  }
+  suffix
 }

@@ -1,4 +1,4 @@
-// scanner 白盒测试
+// scanner white-box tests
 
 ///|
 test "scan plain text" {
@@ -72,4 +72,22 @@ test "scan mixed" {
   assert_eq(tokens[2], Text(", you have "))
   assert_eq(tokens[3], Variable("count"))
   assert_eq(tokens[4], Text(" items."))
+}
+
+///|
+test "scan trims inner whitespace" {
+  let tokens = scan("{{  name  }}")
+  assert_eq(tokens.length(), 1)
+  assert_eq(tokens[0], Variable("name"))
+}
+
+///|
+test "scan unclosed tag raises error" {
+  try {
+    ignore(scan("hello {{name"))
+    fail("expected scan to fail")
+  } catch {
+    TemplateError(msg) => assert_eq(msg, "unclosed tag at index 6")
+    _ => fail("expected TemplateError")
+  }
 }

@@ -1,0 +1,71 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "LL124-Arch/stencil/src"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn compile(String) -> Template raise TemplateError
+
+pub fn escape_html(String) -> String
+
+pub fn is_truthy(Json) -> Bool
+
+pub fn lookup(Json, String) -> Json
+
+pub fn parse(Array[Token]) -> Array[Node] raise TemplateError
+
+pub fn render(String, Json) -> String raise TemplateError
+
+pub fn render_nodes(Array[Node], Context, Map[String, Array[Node]]) -> String
+
+pub fn render_with_partials(String, Json, Map[String, String]) -> String raise TemplateError
+
+pub fn scan(String) -> Array[Token] raise TemplateError
+
+pub fn value_to_string(Json) -> String
+
+// Errors
+pub(all) suberror TemplateError {
+  TemplateError(String)
+} derive(@debug.Debug)
+
+// Types and methods
+pub struct Context {
+  stack : Array[Json]
+}
+pub fn Context::find(Self, String) -> Json
+pub fn Context::new(Json) -> Self
+pub fn Context::pop(Self) -> Unit
+pub fn Context::push(Self, Json) -> Unit
+
+pub(all) enum Node {
+  TextNode(String)
+  VarNode(String, Bool)
+  SectionNode(String, Array[Node], Bool)
+  PartialNode(String, String)
+} derive(Eq, @debug.Debug)
+
+pub struct Template {
+  source : String
+  nodes : Array[Node]
+} derive(@debug.Debug)
+pub fn Template::render(Self, Json) -> String
+pub fn Template::render_with(Self, Json, Map[String, String]) -> String
+
+pub(all) enum Token {
+  Text(String)
+  Variable(String)
+  RawVariable(String)
+  SectionOpen(String)
+  SectionClose(String)
+  InvertedOpen(String)
+  Partial(String)
+  Comment(String)
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+

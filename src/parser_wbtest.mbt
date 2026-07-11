@@ -1,4 +1,4 @@
-// parser 白盒测试
+// parser white-box tests
 
 ///|
 test "parse simple text" {
@@ -82,4 +82,37 @@ test "parse comment ignored" {
   assert_eq(nodes.length(), 2)
   assert_eq(nodes[0], TextNode("a"))
   assert_eq(nodes[1], TextNode("b"))
+}
+
+///|
+test "parse partial captures standalone indentation" {
+  let tokens = [Text("items:\n  "), Partial("item"), Text("\ndone")]
+  let nodes = parse(tokens)
+  assert_eq(nodes.length(), 3)
+  assert_eq(nodes[0], TextNode("items:\n"))
+  assert_eq(nodes[1], PartialNode("item", "  "))
+  assert_eq(nodes[2], TextNode("\ndone"))
+}
+
+///|
+test "parse unexpected close raises error" {
+  try {
+    ignore(parse([SectionClose("oops")]))
+    fail("expected parse to fail")
+  } catch {
+    TemplateError(msg) => assert_eq(msg, "unexpected closing tag: oops")
+    _ => fail("expected TemplateError")
+  }
+}
+
+///|
+test "parse mismatched close raises error" {
+  try {
+    ignore(parse([SectionOpen("a"), SectionClose("b")]))
+    fail("expected parse to fail")
+  } catch {
+    TemplateError(msg) =>
+      assert_eq(msg, "section close mismatch: expected a, got b")
+    _ => fail("expected TemplateError")
+  }
 }
