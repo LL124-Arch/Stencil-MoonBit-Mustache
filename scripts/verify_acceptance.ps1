@@ -65,10 +65,11 @@ function Test-CompilerAvailable {
 }
 
 function Assert-NoGeneratedInterfaceDiff {
-  $status = git status --porcelain
-  $generated = @($status | Where-Object { $_ -match 'pkg\.generated\.mbti' })
-  if ($generated.Count -gt 0) {
-    throw "Generated interface files are not up to date."
+  foreach ($path in @("src/pkg.generated.mbti", "cli/pkg.generated.mbti")) {
+    git diff --quiet -- $path
+    if ($LASTEXITCODE -ne 0) {
+      throw "Generated interface file is not up to date: $path"
+    }
   }
 }
 
@@ -119,12 +120,16 @@ try {
   Write-Section "Verification"
   Invoke-Step "moon fmt --check" { moon fmt --check }
   Invoke-Step "moon check --deny-warn --target all" { moon check --deny-warn --target all }
+  Invoke-Step "moon build --target wasm,wasm-gc,js" { moon build --target wasm,wasm-gc,js }
   Invoke-Step "moon info --target all" { moon info --target all }
   Invoke-Step "generated interfaces clean" { Assert-NoGeneratedInterfaceDiff }
   Invoke-Step "moon test --deny-warn --target wasm,wasm-gc,js" {
     moon test --deny-warn --target wasm,wasm-gc,js
   }
   if (Test-CompilerAvailable) {
+    Invoke-Step "moon build --target native" {
+      moon build --target native
+    }
     Invoke-Step "moon test --deny-warn --target native" {
       moon test --deny-warn --target native
     }

@@ -59,7 +59,7 @@ test "render implicit iterator" {
 
 ///|
 test "render missing variable" {
-  let result = render("Hello {{name}}!", {})
+  let result = render("Hello {{name}}!", Json::empty_object())
   assert_eq(result, "Hello !")
 }
 
@@ -78,7 +78,10 @@ test "render nested section" {
 
 ///|
 test "render comment stripped" {
-  let result = render("before{{! this is a comment }}after", {})
+  let result = render(
+    "before{{! this is a comment }}after",
+    Json::empty_object(),
+  )
   assert_eq(result, "beforeafter")
 }
 
@@ -127,13 +130,21 @@ test "render partial with indentation" {
 ///|
 test "render inline partial without extra indentation" {
   let partials = { "name": "MoonBit" }
-  let result = render_with_partials("Hello {{>name}}!", {}, partials)
+  let result = render_with_partials(
+    "Hello {{>name}}!",
+    Json::empty_object(),
+    partials,
+  )
   assert_eq(result, "Hello MoonBit!")
 }
 
 ///|
 test "render missing partial as empty string" {
-  let result = render_with_partials("A{{>missing}}B", {}, {})
+  let result = render_with_partials(
+    "A{{>missing}}B",
+    Json::empty_object(),
+    Map([]),
+  )
   assert_eq(result, "AB")
 }
 
@@ -142,4 +153,39 @@ test "render object string values in nested section" {
   let data : Json = { "user": { "profile": { "name": "Stencil" } } }
   let result = render("{{#user}}{{profile.name}}{{/user}}", data)
   assert_eq(result, "Stencil")
+}
+
+///|
+test "render empty template" {
+  assert_eq(render("", Json::empty_object()), "")
+}
+
+///|
+test "render escapes all html special characters" {
+  let result = render("{{value}}", { "value": "& < > \" '" })
+  assert_eq(result, "&amp; &lt; &gt; &quot; &#39;")
+}
+
+///|
+test "render empty string section is falsey" {
+  assert_eq(render("{{#value}}shown{{/value}}", { "value": "" }), "")
+  assert_eq(render("{{^value}}fallback{{/value}}", { "value": "" }), "fallback")
+}
+
+///|
+test "render invalid partial source is ignored" {
+  let result = render_with_partials("A{{>broken}}B", Json::empty_object(), {
+    "broken": "{{#missing}}",
+  })
+  assert_eq(result, "AB")
+}
+
+///|
+test "render partial preserves trailing newline indentation" {
+  let result = render_with_partials(
+    "items:\n  {{>item}}",
+    Json::empty_object(),
+    { "item": "one\ntwo\n" },
+  )
+  assert_eq(result, "items:\n  one\n  two\n")
 }

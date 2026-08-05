@@ -183,6 +183,7 @@ Recommended local verification loop:
 ```bash
 moon fmt --check
 moon check --deny-warn --target all
+moon build --target wasm,wasm-gc,js
 moon info --target all
 git diff --exit-code
 moon test --deny-warn --target wasm,wasm-gc,js
@@ -192,16 +193,18 @@ If a system C compiler is available, also run:
 
 ```bash
 moon test --deny-warn --target native
+moon build --target native
 ```
 
 ## CI and Toolchain Notes
 
 The official OSC2026 feedback asked for strict formatting, interface generation, type checking, and tests under the latest MoonBit toolchain.
 
-With current MoonBit CLI `moonc v0.10.3`, strict warning mode is available on `moon check` and `moon test`, but not exposed on `moon fmt` or `moon info`. This repository therefore enforces the current strict equivalents in CI:
+With MoonBit CLI `moonc v0.10.3` or newer, strict warning mode is available on `moon check` and `moon test`, but not exposed on `moon fmt` or `moon info`. This repository therefore enforces the current strict equivalents in CI:
 
 - `moon fmt --check`
 - `moon check --deny-warn --target all`
+- `moon build --target wasm,wasm-gc,js`
 - `moon info --target all`
 - `git diff --exit-code`
 - `moon test --deny-warn --target ...`
@@ -230,6 +233,12 @@ The script checks:
 - local verification commands.
 
 See [docs/acceptance-checklist.md](docs/acceptance-checklist.md) for the requirement-to-evidence mapping used in this repository.
+
+## Performance Baseline
+
+The reproducible end-to-end CLI smoke benchmark is documented in
+[docs/performance.md](docs/performance.md) and can be run with
+`powershell -ExecutionPolicy Bypass -File scripts\benchmark.ps1`.
 
 ## License
 

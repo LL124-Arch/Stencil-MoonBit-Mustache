@@ -45,6 +45,9 @@ jobs:
       - name: Check build
         run: moon check --deny-warn --target all
 
+      - name: Build all targets
+        run: moon build --target wasm,wasm-gc,js
+
       - name: Check generated interfaces
         run: |
           moon info --target all
@@ -77,4 +80,6 @@ jobs:
           moon update
 
       - name: Run native tests
-        run: moon test --deny-warn --target native
+        run: |
+          moon build --target native
+          moon test --deny-warn --target native

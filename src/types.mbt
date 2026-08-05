@@ -49,10 +49,10 @@ pub(all) suberror TemplateError {
 
 ///|
 impl Show for Token with fn output(self, logger) {
-  Show::output(self.to_string(), logger)
+  Show::output(Show::to_string(self), logger)
 }
 
 ///|
 impl Show for Node with fn output(self, logger) {
-  Show::output(self.to_string(), logger)
+  Show::output(Show::to_string(self), logger)
 }

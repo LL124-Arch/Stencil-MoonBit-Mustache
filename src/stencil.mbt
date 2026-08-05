@@ -15,7 +15,7 @@ pub fn render_with_partials(
   partial_sources : Map[String, String],
 ) -> String raise TemplateError {
   let tpl = compile(template)
-  let compiled_partials : Map[String, Array[Node]] = {}
+  let compiled_partials : Map[String, Array[Node]] = Map([])
   partial_sources.each(fn(name, src) {
     try {
       let p = compile(src)
@@ -40,7 +40,7 @@ pub fn compile(source : String) -> Template raise TemplateError {
 /// Render a precompiled template with the provided data context.
 pub fn Template::render(self : Template, data : Json) -> String {
   let ctx = Context::new(data)
-  let partials : Map[String, Array[Node]] = {}
+  let partials : Map[String, Array[Node]] = Map([])
   render_nodes(self.nodes, ctx, partials)
 }
 
@@ -51,7 +51,7 @@ pub fn Template::render_with(
   data : Json,
   partial_sources : Map[String, String],
 ) -> String {
-  let compiled_partials : Map[String, Array[Node]] = {}
+  let compiled_partials : Map[String, Array[Node]] = Map([])
   partial_sources.each(fn(name, src) {
     try {
       let p = compile(src)

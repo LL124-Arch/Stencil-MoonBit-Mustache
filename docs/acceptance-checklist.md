@@ -39,9 +39,10 @@ Reference sources:
 
 ## Notes for reviewers
 
-- MoonBit CLI `moonc v0.10.3` currently exposes strict warning mode on `moon check` and `moon test`, but not on `moon fmt` or `moon info`.
+- MoonBit CLI `moonc v0.10.3` or newer exposes strict warning mode on `moon check` and `moon test`, but not on `moon fmt` or `moon info`.
 - This repository therefore uses the strict equivalents recommended by the current CLI help:
   - `moon fmt --check`
+  - `moon build --target wasm,wasm-gc,js`
   - `moon info --target all`
   - `git diff --exit-code`
   - `moon check --deny-warn --target all`
