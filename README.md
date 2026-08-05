@@ -206,7 +206,7 @@ With MoonBit CLI `moonc v0.10.3` or newer, strict warning mode is available on `
 - `moon check --deny-warn --target all`
 - `moon build --target wasm,wasm-gc,js`
 - `moon info --target all`
-- `git diff --exit-code`
+- `git diff --ignore-all-space --exit-code` (interface drift check; ignores toolchain-only whitespace churn)
 - `moon test --deny-warn --target ...`
 
 Both GitHub Actions and GitLink CI are included:
