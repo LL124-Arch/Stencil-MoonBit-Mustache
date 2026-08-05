@@ -66,7 +66,7 @@ function Test-CompilerAvailable {
 
 function Assert-NoGeneratedInterfaceDiff {
   foreach ($path in @("src/pkg.generated.mbti", "cli/pkg.generated.mbti")) {
-    git diff --quiet -- $path
+    git diff --quiet --ignore-blank-lines -- $path
     if ($LASTEXITCODE -ne 0) {
       throw "Generated interface file is not up to date: $path"
     }

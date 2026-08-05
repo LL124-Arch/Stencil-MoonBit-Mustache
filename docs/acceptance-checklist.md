@@ -44,7 +44,7 @@ Reference sources:
   - `moon fmt --check`
   - `moon build --target wasm,wasm-gc,js`
   - `moon info --target all`
-  - `git diff --ignore-all-space --exit-code` (ignores toolchain-only whitespace churn)
+  - `git diff --ignore-blank-lines --exit-code` (ignores toolchain-only blank-line churn)
   - `moon check --deny-warn --target all`
   - `moon test --deny-warn --target ...`
 

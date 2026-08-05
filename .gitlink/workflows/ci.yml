@@ -51,7 +51,7 @@ jobs:
       - name: Check generated interfaces
         run: |
           moon info --target all
-          git diff --ignore-all-space --exit-code
+          git diff --ignore-blank-lines --exit-code
 
       - name: Run cross-platform tests
         run: moon test --deny-warn --target wasm,wasm-gc,js
