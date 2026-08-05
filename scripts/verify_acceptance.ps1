@@ -66,7 +66,11 @@ function Test-CompilerAvailable {
 
 function Assert-NoGeneratedInterfaceDiff {
   foreach ($path in @("src/pkg.generated.mbti", "cli/pkg.generated.mbti")) {
-    git diff --quiet --ignore-blank-lines -- $path
+    $bytes = [IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $path).Path)
+    if ($bytes.Length -ge 2 -and $bytes[$bytes.Length - 1] -eq 10 -and $bytes[$bytes.Length - 2] -eq 10) {
+      [IO.File]::WriteAllBytes((Resolve-Path -LiteralPath $path).Path, $bytes[0..($bytes.Length - 2)])
+    }
+    git diff --quiet -- $path
     if ($LASTEXITCODE -ne 0) {
       throw "Generated interface file is not up to date: $path"
     }
