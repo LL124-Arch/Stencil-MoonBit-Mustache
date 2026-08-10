@@ -1,7 +1,7 @@
 ///|
 /// Build the template AST from the scanned token stream.
 pub fn parse(tokens : Array[Token]) -> Array[Node] raise TemplateError {
-  let result = parse_inner(tokens, 0, "")
+  let result = parse_inner(tokens, 0, "", 0)
   result.0
 }
 
@@ -11,7 +11,11 @@ fn parse_inner(
   tokens : Array[Token],
   start : Int,
   until : String,
+  depth : Int,
 ) -> (Array[Node], Int) raise TemplateError {
+  if depth > 256 {
+    raise TemplateError("maximum section nesting depth exceeded")
+  }
   let nodes : Array[Node] = []
   let mut i = start
   while i < tokens.length() {
@@ -35,14 +39,14 @@ fn parse_inner(
         i = i + 1
       }
       SectionOpen(name) => {
-        let inner = parse_inner(tokens, i + 1, name)
+        let inner = parse_inner(tokens, i + 1, name, depth + 1)
         let children = inner.0
         let consumed = inner.1
         nodes.push(SectionNode(name, children, false))
         i = i + 1 + consumed
       }
       InvertedOpen(name) => {
-        let inner = parse_inner(tokens, i + 1, name)
+        let inner = parse_inner(tokens, i + 1, name, depth + 1)
         let children = inner.0
         let consumed = inner.1
         nodes.push(SectionNode(name, children, true))

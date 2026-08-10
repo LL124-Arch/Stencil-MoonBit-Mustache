@@ -5,13 +5,14 @@
 [![GitHub CI](https://img.shields.io/badge/CI-GitHub%20Actions-success.svg)](.github/workflows/ci.yml)
 [![GitLink CI](https://img.shields.io/badge/CI-GitLink-success.svg)](.gitlink/workflows/ci.yml)
 
-Stencil is a lightweight Mustache-style template engine for MoonBit. It focuses on the subset of features that are most useful in application code: variable interpolation, sections, inverted sections, partials, comments, dotted-path lookup, and safe HTML escaping by default.
+Stencil is a lightweight Mustache-style template engine for MoonBit. It focuses on a practical, documented core: variable interpolation, sections, inverted sections, partials, comments, dotted-path lookup, changing delimiters, and safe HTML escaping by default.
 
 ## Why this project
 
 - Small API surface: `render`, `compile`, and partial-aware rendering helpers.
 - Safe-by-default output: `{{name}}` escapes HTML automatically.
 - Practical Mustache coverage: sections, inverted sections, lists, object contexts, comments, raw variables, and partials.
+- Predictable edge behavior: standalone control lines, CRLF input, bounded nesting, and deterministic errors.
 - MoonBit-first maintenance: tests, CI, changelog, and repository self-checks are part of the project itself.
 
 ## Feature Summary
@@ -24,6 +25,9 @@ Stencil is a lightweight Mustache-style template engine for MoonBit. It focuses 
 - Implicit iterator for lists: `{{.}}`
 - Partials with standalone indentation propagation
 - Comment tags: `{{! ignored }}`
+- Standalone comments and section control lines
+- Delimiter changes: `{{=<% %>=}}<%name%>`
+- Bounded parser and partial expansion depth (256 levels)
 
 ## Installation
 
@@ -32,6 +36,8 @@ Add the package to your MoonBit module:
 ```bash
 moon add LL124-Arch/stencil
 ```
+
+Package page: [LL124-Arch/stencil on Mooncakes](https://mooncakes.io/docs/LL124-Arch/stencil)
 
 Or import it directly in code:
 
@@ -102,6 +108,8 @@ Supported behavior:
 - Partials
 - Comments
 - Dotted-path lookup
+- Standalone comments and section control lines using the default delimiters
+- Delimiter changes such as `{{=<% %>=}}<%name%>`
 
 Current behavior boundaries:
 
@@ -110,6 +118,8 @@ Current behavior boundaries:
 - Objects stringify as `[Object]` outside section traversal
 - Missing partials currently render as empty strings
 - Invalid partial source is ignored by `render_with_partials` / `Template::render_with`
+- Parser sections and partial expansion are limited to 256 nested levels; the checked partial API raises `TemplateError` when the limit is exceeded
+- Mustache lambdas, expression evaluation, filesystem partial loading, and dynamic partial names are outside the current scope
 
 These boundaries are documented so callers can rely on stable behavior instead of guessing from implementation details.
 
@@ -185,7 +195,7 @@ moon fmt --check
 moon check --deny-warn --target all
 moon build --target wasm,wasm-gc,js
 moon info --target all
-git diff --exit-code
+git diff --ignore-blank-lines --exit-code
 moon test --deny-warn --target wasm,wasm-gc,js
 ```
 
@@ -208,6 +218,7 @@ With MoonBit CLI `moonc v0.10.3` or newer, strict warning mode is available on `
 - `moon info --target all`
 - `git diff --ignore-blank-lines --exit-code` (interface drift check; ignores toolchain-only blank-line churn)
 - `moon test --deny-warn --target ...`
+- `moon run cli -- benchmark` (deterministic benchmark smoke check)
 
 Both GitHub Actions and GitLink CI are included:
 
@@ -229,17 +240,25 @@ The script checks:
 - GitHub and GitLink CI files,
 - commit history summary,
 - default branch visibility,
-- MoonBit source scale,
+- MoonBit source scale and test-suite floor,
 - local verification commands.
 
 See [docs/acceptance-checklist.md](docs/acceptance-checklist.md) for the requirement-to-evidence mapping used in this repository.
 
 ## Performance Baseline
 
-The reproducible end-to-end CLI smoke benchmark is documented in
-[docs/performance.md](docs/performance.md) and can be run with
-`powershell -ExecutionPolicy Bypass -File scripts\benchmark.ps1`.
+The reproducible benchmark has two layers: the CLI measures compile-plus-render
+and compiled-template rendering internally, while the PowerShell wrapper also
+records end-to-end `moon run` startup cost. It is documented in
+[docs/performance.md](docs/performance.md) and can be run with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\benchmark.ps1 -Iterations 5
+```
+
+The benchmark verifies that both modes produce the same deterministic checksum.
 
 ## License
 
-This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE)
+and [NOTICE](NOTICE) for the project attribution and compliance note.

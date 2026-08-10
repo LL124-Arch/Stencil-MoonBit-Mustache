@@ -189,3 +189,59 @@ test "render partial preserves trailing newline indentation" {
   )
   assert_eq(result, "items:\n  one\n  two\n")
 }
+
+///|
+test "render partial chain rejects excessive nesting depth" {
+  let partials : Map[String, String] = Map([])
+  for i = 0; i < 257; i = i + 1 {
+    let name = "p" + i.to_string()
+    let body = if i == 256 {
+      "leaf"
+    } else {
+      "{{>p" + (i + 1).to_string() + "}}"
+    }
+    partials.set(name, body)
+  }
+  try {
+    ignore(render_with_partials("A{{>p0}}B", Json::empty_object(), partials))
+    fail("expected partial nesting to be rejected")
+  } catch {
+    TemplateError(msg) =>
+      assert_eq(msg, "maximum partial nesting depth exceeded")
+    _ => fail("expected TemplateError")
+  }
+}
+
+///|
+test "render standalone comment removes its whole CRLF line" {
+  let result = render("A\r\n  {{! ignored }}\r\nB", Json::empty_object())
+  assert_eq(result, "A\r\nB")
+}
+
+///|
+test "render standalone section controls remove their tag lines" {
+  let result = render("A\n{{#enabled}}\nvisible\n{{/enabled}}\nB", {
+    "enabled": true,
+  })
+  assert_eq(result, "A\nvisible\nB")
+}
+
+///|
+test "render supports changing delimiters" {
+  let result = render("{{=<% %>=}}<%name%>", { "name": "MoonBit" })
+  assert_eq(result, "MoonBit")
+}
+
+///|
+test "render removes standalone delimiter declaration line" {
+  let result = render("A\n{{=<% %>=}}\n<%name%>\nB", { "name": "MoonBit" })
+  assert_eq(result, "A\nMoonBit\nB")
+}
+
+///|
+test "render supports custom delimiter sections and raw values" {
+  let result = render("{{=<% %>=}}<%#items%>[<%&value%>]<%/items%>", {
+    "items": [{ "value": "<x>" }],
+  })
+  assert_eq(result, "[<x>]")
+}

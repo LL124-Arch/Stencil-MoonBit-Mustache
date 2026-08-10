@@ -85,9 +85,15 @@ try {
   @(
     "README.md",
     "LICENSE",
+    "NOTICE",
     "moon.mod",
     ".github/workflows/ci.yml",
     ".gitlink/workflows/ci.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "docs/performance.md",
+    "scripts/benchmark.ps1",
     "src",
     "cli",
     "docs/acceptance-checklist.md"
@@ -117,6 +123,19 @@ try {
   }
   Write-Host "MoonBit source files: $($sourceFiles.Count)"
   Write-Host "MoonBit source lines: $sourceLines"
+  if ($sourceLines -lt 1500) {
+    throw "MoonBit source scale is below the repository acceptance floor of 1500 lines."
+  }
+  $testFiles = Get-ChildItem -Recurse -File -Path "src" -Filter "*_wbtest.mbt"
+  $testCount = 0
+  foreach ($file in $testFiles) {
+    $testCount += (Select-String -LiteralPath $file.FullName -Pattern '^test ' -CaseSensitive).Count
+  }
+  Write-Host "MoonBit white-box test files: $($testFiles.Count)"
+  Write-Host "MoonBit test blocks: $testCount"
+  if ($testCount -lt 100) {
+    throw "Test suite is below the repository acceptance floor of 100 test blocks."
+  }
 
   Write-Section "Toolchain"
   moon version --all

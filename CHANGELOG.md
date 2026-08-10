@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-08-10
+
+### Added
+- Bounded parser section depth and partial expansion depth with deterministic `TemplateError` diagnostics.
+- Standalone comments and section-control-line handling for the default delimiters, including CRLF input.
+- Mustache delimiter changes such as `{{=<% %>=}}`.
+- More than 100 compatibility, Unicode, CRLF, long-input, deep-nesting, list-size, partial, and malformed-template tests.
+- An internal engine benchmark for compile-plus-render versus compiled-template rendering, with deterministic checksum validation.
+- Added a project `NOTICE` file documenting attribution and the absence of vendored third-party source.
+
+### Changed
+- Updated README, acceptance checklist, performance report, and proposal material for final OSC2026 review.
+
 ## [0.1.1] - 2026-07-11
 
 ### Added

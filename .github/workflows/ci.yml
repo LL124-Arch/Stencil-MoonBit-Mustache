@@ -56,6 +56,9 @@ jobs:
       - name: Run cross-platform tests
         run: moon test --deny-warn --target wasm,wasm-gc,js
 
+      - name: Run benchmark smoke check
+        run: moon run cli -- benchmark
+
   native:
     name: Native Test (ubuntu-latest)
     runs-on: ubuntu-latest

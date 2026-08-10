@@ -25,7 +25,7 @@ pub fn render_with_partials(
     }
   })
   let ctx = Context::new(data)
-  render_nodes(tpl.nodes, ctx, compiled_partials)
+  render_nodes_checked(tpl.nodes, ctx, compiled_partials, 0)
 }
 
 ///|

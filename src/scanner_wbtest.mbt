@@ -91,3 +91,21 @@ test "scan unclosed tag raises error" {
     _ => fail("expected TemplateError")
   }
 }
+
+///|
+test "scan custom delimiters" {
+  let tokens = scan("{{=<% %>=}}<%name%>")
+  assert_eq(tokens.length(), 1)
+  assert_eq(tokens[0], Variable("name"))
+}
+
+///|
+test "scan rejects malformed delimiter declaration" {
+  try {
+    ignore(scan("{{=only-one=}}"))
+    fail("expected delimiter declaration to fail")
+  } catch {
+    TemplateError(msg) => assert_eq(msg, "invalid delimiter declaration")
+    _ => fail("expected TemplateError")
+  }
+}

@@ -116,3 +116,22 @@ test "parse mismatched close raises error" {
     _ => fail("expected TemplateError")
   }
 }
+
+///|
+test "parse rejects excessive nesting depth" {
+  let tokens : Array[Token] = []
+  for i = 0; i < 257; i = i + 1 {
+    tokens.push(SectionOpen("level"))
+  }
+  for i = 0; i < 257; i = i + 1 {
+    tokens.push(SectionClose("level"))
+  }
+  try {
+    ignore(parse(tokens))
+    fail("expected parse to reject excessive nesting")
+  } catch {
+    TemplateError(msg) =>
+      assert_eq(msg, "maximum section nesting depth exceeded")
+    _ => fail("expected TemplateError")
+  }
+}
