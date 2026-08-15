@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.4 - 2026-08-15
+
+- Switched the project and Mooncakes package metadata to the MIT License to
+  match the final OSC2026 acceptance requirement.
+- Added a direct link to the official Mustache manual and a dedicated,
+  reviewable compatibility-scope document.
+- Corrected the performance documentation and proposal wording to describe the
+  benchmark mode that the current CLI actually executes.
+- Documented why hosted CI formats `src` while still checking, building,
+  generating interfaces for, and testing the complete CLI package.
+
 ## 0.2.0 - 2026-08-15
 
 - Added configurable `RenderOptions` for escaping, output/depth limits,
@@ -26,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Standalone comments and section-control-line handling for the default delimiters, including CRLF input.
 - Mustache delimiter changes such as `{{=<% %>=}}`.
 - More than 100 compatibility, Unicode, CRLF, long-input, deep-nesting, list-size, partial, and malformed-template tests.
-- An internal engine benchmark for compile-plus-render versus compiled-template rendering, with deterministic checksum validation.
+- An internal engine benchmark with deterministic checksum validation (the
+  current public CLI benchmark uses the compiled-template path).
 - Added a project `NOTICE` file documenting attribution and the absence of vendored third-party source.
 
 ### Changed

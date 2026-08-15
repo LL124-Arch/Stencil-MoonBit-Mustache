@@ -1,7 +1,7 @@
 # Stencil
 
 [![MoonBit](https://img.shields.io/badge/Language-MoonBit-orange.svg)](https://www.moonbitlang.com/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub CI](https://img.shields.io/badge/CI-GitHub%20Actions-success.svg)](.github/workflows/ci.yml)
 [![GitLink CI](https://img.shields.io/badge/CI-GitLink-success.svg)](.gitlink/workflows/ci.yml)
 
@@ -137,6 +137,8 @@ moon run cli -- benchmark
 
 Stencil intentionally supports a practical core instead of every corner of the full Mustache spec.
 
+The compatibility target is the [official Mustache manual](https://mustache.github.io/mustache.5.html). The exact implemented subset, intentional deviations, and unsupported host-dependent extensions are recorded in [docs/mustache-compatibility.md](docs/mustache-compatibility.md).
+
 Supported behavior:
 
 - Variables and raw variables
@@ -249,15 +251,23 @@ moon build --target native
 
 The official OSC2026 feedback asked for strict formatting, interface generation, type checking, and tests under the latest MoonBit toolchain.
 
-With MoonBit CLI `moonc v0.10.3` or newer, strict warning mode is available on `moon check` and `moon test`, but not exposed on `moon fmt` or `moon info`. This repository therefore enforces the current strict equivalents in CI:
+With MoonBit CLI `moonc v0.10.3` or newer, strict warning mode is available on
+`moon check` and `moon test`, but not exposed on `moon fmt` or `moon info`.
+Hosted CI runs `moon fmt --check src` because the 0.10.3 formatter accepts the
+executable package metadata in `cli/moon.pkg`, while newer formatters may
+rewrite that metadata. The complete CLI package remains covered by check,
+build, interface generation, and multi-target tests:
 
-- `moon fmt --check`
+- `moon fmt --check src`
 - `moon check --deny-warn --target all`
 - `moon build --target wasm,wasm-gc,js`
 - `moon info --target all`
 - `git diff --ignore-blank-lines --exit-code` (interface drift check; ignores toolchain-only blank-line churn)
 - `moon test --deny-warn --target ...`
 - `moon run cli -- benchmark` (deterministic benchmark smoke check)
+
+The local acceptance script additionally runs full `moon fmt --check` under the
+pinned 0.10.3 toolchain.
 
 Both GitHub Actions and GitLink CI are included:
 
@@ -286,18 +296,19 @@ See [docs/acceptance-checklist.md](docs/acceptance-checklist.md) for the require
 
 ## Performance Baseline
 
-The reproducible benchmark has two layers: the CLI measures compile-plus-render
-and compiled-template rendering internally, while the PowerShell wrapper also
-records end-to-end `moon run` startup cost. It is documented in
+The reproducible benchmark uses one compiled-template workload: the CLI compiles
+the four-item catalog template once and renders it 200 times. The PowerShell
+wrapper additionally records end-to-end `moon run` startup cost. It is documented in
 [docs/performance.md](docs/performance.md) and can be run with:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\benchmark.ps1 -Iterations 5
 ```
 
-The benchmark verifies that both modes produce the same deterministic checksum.
+The CLI reports the workload, iteration count, output length, checksum, and a
+consistency flag so correctness regressions are distinguishable from timing noise.
 
 ## License
 
-This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE)
+This project is licensed under the MIT License. See [LICENSE](LICENSE)
 and [NOTICE](NOTICE) for the project attribution and compliance note.

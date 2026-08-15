@@ -93,11 +93,17 @@ try {
     "CONTRIBUTING.md",
     "CODE_OF_CONDUCT.md",
     "docs/performance.md",
+    "docs/mustache-compatibility.md",
     "scripts/benchmark.ps1",
     "src",
     "cli",
     "docs/acceptance-checklist.md"
   ) | ForEach-Object { Assert-File $_ }
+
+  $moonModText = Get-Content (Join-Path $RepoRoot "moon.mod") -Raw
+  if ($moonModText -notmatch '(?m)^license\s*=\s*"MIT"\s*$') {
+    throw "moon.mod must declare the MIT license"
+  }
 
   Write-Section "Repository Metadata"
   $commitCount = git rev-list --count HEAD

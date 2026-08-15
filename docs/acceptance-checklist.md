@@ -37,23 +37,31 @@ Reference sources:
 | Compatibility and boundary tests | `src/compatibility.mbt`, compatibility matrix, fixture/security/limits tests |
 | Configurable production API | `src/options.mbt`, `src/partials.mbt`, `src/diagnostics.mbt`, `src/analysis.mbt` |
 | Performance evidence | `scripts/benchmark.ps1`, `cli/main.mbt`, `docs/performance.md` |
-| License | `LICENSE` |
+| MIT license and package metadata | `LICENSE`, `moon.mod`, README license badge |
 | Attribution and third-party notice | `NOTICE` |
 | Commit history | `git log --oneline`, `scripts/verify_acceptance.ps1` |
 | Repository self-check | `scripts/verify_acceptance.ps1` |
 | Proposal and usage consistency | `项目申报书.md`, `README.md`, `CHANGELOG.md` |
+| Mustache reference and scope | `docs/mustache-compatibility.md`, README compatibility notes |
 
 ## Notes for reviewers
 
 - MoonBit CLI `moonc v0.10.3` or newer exposes strict warning mode on `moon check` and `moon test`, but not on `moon fmt` or `moon info`.
 - This repository therefore uses the strict equivalents recommended by the current CLI help:
-  - `moon fmt --check`
+  - local acceptance: `moon fmt --check`
+  - hosted CI: `moon fmt --check src` (the MoonBit 0.10.3 formatter accepts the
+    executable package metadata required by this repository; newer formatters
+    may rewrite that metadata, so CI keeps the source formatter check stable)
   - `moon build --target wasm,wasm-gc,js`
-- `moon info --target all`
-- `git diff --ignore-blank-lines --exit-code` (ignores toolchain-only blank-line churn)
-- `moon check --deny-warn --target all`
-- `moon test --deny-warn --target ...`
-- `moon run cli -- benchmark`
+  - `moon info --target all`
+  - `git diff --ignore-blank-lines --exit-code` (ignores toolchain-only blank-line churn)
+  - `moon check --deny-warn --target all`
+  - `moon test --deny-warn --target ...`
+  - `moon run cli -- benchmark`
+
+The CI source-format scope does not weaken executable validation: `moon check`,
+`moon build`, `moon info`, interface generation, and multi-target tests still
+discover and validate the complete `cli` package.
 
 These steps are enforced both in CI and in the local acceptance script.
 

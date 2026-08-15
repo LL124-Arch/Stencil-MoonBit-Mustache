@@ -13,7 +13,7 @@
 <body>
   <h1>第八届 CCF 开源创新大赛 - 选题申报书</h1>
   <p><strong>项目名称：</strong>Stencil - 基于 MoonBit 的轻量级高性能原生模板引擎</p>
-  <p><strong>参赛方向：</strong>生态库移植；<strong>参考规范：</strong>Mustache 官方核心规范；<strong>许可证：</strong>Apache-2.0</p>
+  <p><strong>参赛方向：</strong>生态库移植；<strong>参考规范：</strong><a href="https://mustache.github.io/mustache.5.html">Mustache 官方核心规范</a>；<strong>许可证：</strong>MIT</p>
   <p><strong>仓库：</strong>
     <a href="https://github.com/LL124-Arch/Stencil-MoonBit-Mustache">GitHub</a> ·
     <a href="https://www.gitlink.org.cn/lll15362196148/stencil">GitLink</a> ·
@@ -31,7 +31,7 @@
     <li>支持 <code>{{=&lt;% %&gt;=}}&lt;%name%&gt;</code> 可变分隔符。</li>
     <li>对未闭合标签、区块错配、无效分隔符、超深 section 和超深 partial 提供可诊断错误。</li>
   </ol>
-  <p>lambda、表达式求值、文件系统 partial 加载和动态 partial 名称暂不属于当前范围，具体边界见 README。</p>
+  <p>lambda、表达式求值、文件系统 partial 加载和动态 partial 名称暂不属于当前范围，具体支持子集与边界见 <a href="docs/mustache-compatibility.md">Mustache 兼容性说明</a>。</p>
 
   <h2>系统架构</h2>
   <ol>
@@ -42,7 +42,7 @@
   </ol>
 
   <h2>工程质量与验证</h2>
-  <p>项目包含 100+ 个确定性测试，覆盖兼容性、错误、Unicode、CRLF、长文本、深层嵌套、大列表、partial、可变分隔符和递归边界；CI 执行格式检查、严格类型检查、接口生成检查、多目标构建和 WASM/JS/Native 测试；基准脚本同时记录编译+渲染、编译后重复渲染和 CLI 端到端数据。</p>
-  <p>项目使用 Apache-2.0，公开 README、许可证、贡献指南、行为准则、更新日志、提交记录和验收自查脚本。</p>
+  <p>项目包含 235 个确定性测试，覆盖兼容性、错误、Unicode、CRLF、长文本、深层嵌套、大列表、partial、可变分隔符和递归边界；CI 执行格式检查、严格类型检查、接口生成检查、多目标构建和 WASM/JS/Native 测试；基准脚本记录编译后重复渲染和 CLI 端到端数据。</p>
+  <p>项目使用 MIT，公开 README、许可证、贡献指南、行为准则、更新日志、提交记录和验收自查脚本。</p>
 </body>
 </html>

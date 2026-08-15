@@ -11,13 +11,13 @@
 
 name = "LL124-Arch/stencil"
 
-version = "0.1.3"
+version = "0.1.4"
 
 readme = "README.md"
 
 repository = "https://github.com/LL124-Arch/Stencil-MoonBit-Mustache"
 
-license = "Apache-2.0"
+license = "MIT"
 
 keywords = [ "template", "mustache", "stencil", "render" ]
 
