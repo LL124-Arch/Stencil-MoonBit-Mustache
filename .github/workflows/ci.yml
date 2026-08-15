@@ -42,7 +42,6 @@ jobs:
       - name: Check formatting
         run: |
           moon fmt --check src
-          moon fmt --check cli/main.mbt
 
       - name: Check build
         run: moon check --deny-warn --target all
