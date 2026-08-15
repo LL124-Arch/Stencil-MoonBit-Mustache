@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0 - 2026-08-15
+
+- Added configurable `RenderOptions` for escaping, output/depth limits,
+  missing partial policies, and partial-cycle diagnostics.
+- Added `PartialStore` with validation, dependency inspection, bulk compilation,
+  and reusable rendering.
+- Added source diagnostics, AST metrics, batch rendering, a 20-case practical
+  compatibility corpus, a four-item catalog benchmark, and 235 deterministic
+  boundary/regression tests.
+- Updated the CLI and acceptance scripts for `analyze`, `compatibility`, and
+  machine-readable benchmark output.
+- Kept legacy rendering behavior compatible, including ignored malformed
+  optional partials in the original API.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

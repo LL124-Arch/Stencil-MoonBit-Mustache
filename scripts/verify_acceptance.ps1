@@ -123,8 +123,8 @@ try {
   }
   Write-Host "MoonBit source files: $($sourceFiles.Count)"
   Write-Host "MoonBit source lines: $sourceLines"
-  if ($sourceLines -lt 1500) {
-    throw "MoonBit source scale is below the repository acceptance floor of 1500 lines."
+  if ($sourceLines -lt 3800) {
+    throw "MoonBit source scale is below the repository acceptance floor of 3800 lines."
   }
   $testFiles = Get-ChildItem -Recurse -File -Path "src" -Filter "*_wbtest.mbt"
   $testCount = 0
@@ -133,8 +133,8 @@ try {
   }
   Write-Host "MoonBit white-box test files: $($testFiles.Count)"
   Write-Host "MoonBit test blocks: $testCount"
-  if ($testCount -lt 100) {
-    throw "Test suite is below the repository acceptance floor of 100 test blocks."
+  if ($testCount -lt 200) {
+    throw "Test suite is below the repository acceptance floor of 200 test blocks."
   }
 
   Write-Section "Toolchain"

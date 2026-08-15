@@ -28,6 +28,10 @@ Stencil is a lightweight Mustache-style template engine for MoonBit. It focuses 
 - Standalone comments and section control lines
 - Delimiter changes: `{{=<% %>=}}<%name%>`
 - Bounded parser and partial expansion depth (256 levels)
+- Configurable render limits, missing-partial policies, and cycle detection
+- `PartialStore` for reusable partial registries, validation, dependency inspection, and startup compilation
+- Diagnostics and structural metrics for editors, CI, and acceptance review
+- Compatibility corpus and reproducible HTML catalog benchmark
 
 ## Installation
 
@@ -94,6 +98,41 @@ Render a template while supplying partial sources by name.
 
 Render a precompiled template with named partial sources.
 
+### `RenderOptions` and checked rendering
+
+`render_with_options` and `render_with_options_and_partials` expose explicit
+policies for HTML escaping, nesting/partial/output limits, missing partials,
+and recursive partial detection. `MissingPartialPolicy::Empty` preserves the
+legacy behavior; `Error` is recommended for production validation and
+`Preserve` is useful for multi-pass pipelines.
+
+```moonbit
+let options = @stencil.RenderOptions::default()
+  .with_max_output_length(1_000_000)
+  .with_missing_partial(@stencil.MissingPartialPolicy::Error)
+let html = @stencil.render_with_options_and_partials(template, data, partials, options)
+```
+
+### `PartialStore`
+
+`PartialStore` centralizes named sources and supports `set`, `remove`, `names`,
+`validate`, `dependencies`, `compile_all`, and option-aware rendering. This
+provides a deterministic application boundary without introducing filesystem
+or network access into the library.
+
+### Diagnostics and analysis
+
+`diagnose(source)` returns stable severity, message, byte index, line, and
+column fields without raising. `compile(source).stats()` reports node counts,
+variables, sections, partials, depth, delimiter use, and a complexity score.
+The CLI exposes the same evidence:
+
+```bash
+moon run cli -- analyze
+moon run cli -- compatibility
+moon run cli -- benchmark
+```
+
 ## Mustache Compatibility Notes
 
 Stencil intentionally supports a practical core instead of every corner of the full Mustache spec.
@@ -116,9 +155,9 @@ Current behavior boundaries:
 - Missing keys render as empty strings
 - Arrays stringify as `[Array]` outside section iteration
 - Objects stringify as `[Object]` outside section traversal
-- Missing partials currently render as empty strings
-- Invalid partial source is ignored by `render_with_partials` / `Template::render_with`
-- Parser sections and partial expansion are limited to 256 nested levels; the checked partial API raises `TemplateError` when the limit is exceeded
+- Missing partials render as empty strings only through legacy APIs; configured APIs can error or preserve the tag
+- Invalid partial source is ignored by legacy `render_with_partials` / `Template::render_with`, while configured APIs report it
+- Parser sections and partial expansion default to 256 nested levels; `RenderOptions` can lower or remove the render-time limits
 - Mustache lambdas, expression evaluation, filesystem partial loading, and dynamic partial names are outside the current scope
 
 These boundaries are documented so callers can rely on stable behavior instead of guessing from implementation details.

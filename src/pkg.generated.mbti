@@ -6,7 +6,21 @@ import {
 }
 
 // Values
+pub fn analyze(String) -> TemplateStats raise TemplateError
+
+pub fn benchmark_is_consistent(BenchmarkResult) -> Bool
+
+pub fn benchmark_summary(BenchmarkResult) -> String
+
+pub fn compatibility_cases() -> Array[CompatibilityCase]
+
+pub fn compatibility_failures(Array[CompatibilityResult]) -> Array[CompatibilityResult]
+
+pub fn compatibility_summary(Array[CompatibilityResult]) -> String
+
 pub fn compile(String) -> Template raise TemplateError
+
+pub fn diagnose(String) -> Array[TemplateDiagnostic]
 
 pub fn escape_html(String) -> String
 
@@ -16,11 +30,21 @@ pub fn lookup(Json, String) -> Json
 
 pub fn parse(Array[Token]) -> Array[Node] raise TemplateError
 
+pub fn production_benchmark_workload() -> BenchmarkWorkload
+
 pub fn render(String, Json) -> String raise TemplateError
 
 pub fn render_nodes(Array[Node], Context, Map[String, Array[Node]]) -> String
 
+pub fn render_with_options(String, Json, RenderOptions) -> String raise TemplateError
+
+pub fn render_with_options_and_partials(String, Json, Map[String, String], RenderOptions) -> String raise TemplateError
+
 pub fn render_with_partials(String, Json, Map[String, String]) -> String raise TemplateError
+
+pub fn run_benchmark(BenchmarkWorkload) -> BenchmarkResult raise TemplateError
+
+pub fn run_compatibility_suite(Array[CompatibilityCase]) -> Array[CompatibilityResult]
 
 pub fn scan(String) -> Array[Token] raise TemplateError
 
@@ -32,6 +56,37 @@ pub(all) suberror TemplateError {
 } derive(@debug.Debug)
 
 // Types and methods
+pub(all) struct BenchmarkResult {
+  workload : String
+  iterations : Int
+  output_length : Int
+  total_output_length : Int
+  checksum : Int
+} derive(@debug.Debug)
+
+pub(all) struct BenchmarkWorkload {
+  name : String
+  template : String
+  data : Json
+  iterations : Int
+} derive(@debug.Debug)
+
+pub(all) struct CompatibilityCase {
+  name : String
+  template : String
+  data : Json
+  expected : String
+} derive(@debug.Debug)
+pub fn CompatibilityCase::new(String, String, Json, String) -> Self
+
+pub(all) struct CompatibilityResult {
+  name : String
+  passed : Bool
+  actual : String
+  expected : String
+  error : String
+} derive(@debug.Debug)
+
 pub struct Context {
   stack : Array[Json]
 }
@@ -40,6 +95,18 @@ pub fn Context::new(Json) -> Self
 pub fn Context::pop(Self) -> Unit
 pub fn Context::push(Self, Json) -> Unit
 
+pub(all) enum DiagnosticSeverity {
+  Error
+  Warning
+  Info
+} derive(Eq, @debug.Debug)
+
+pub(all) enum MissingPartialPolicy {
+  Empty
+  Error
+  Preserve
+} derive(Eq, @debug.Debug)
+
 pub(all) enum Node {
   TextNode(String)
   VarNode(String, Bool)
@@ -47,12 +114,91 @@ pub(all) enum Node {
   PartialNode(String, String)
 } derive(Eq, @debug.Debug)
 
+pub(all) struct PartialStore {
+  sources : Map[String, String]
+} derive(@debug.Debug)
+pub fn PartialStore::compile_all(Self) -> Map[String, Template] raise TemplateError
+pub fn PartialStore::contains(Self, String) -> Bool
+pub fn PartialStore::dependencies(Self, String) -> Array[String] raise TemplateError
+pub fn PartialStore::from_map(Map[String, String]) -> Self
+pub fn PartialStore::get(Self, String) -> String?
+pub fn PartialStore::names(Self) -> Array[String]
+pub fn PartialStore::new() -> Self
+pub fn PartialStore::remove(Self, String) -> Unit
+pub fn PartialStore::render(Self, String, Json) -> String raise TemplateError
+pub fn PartialStore::render_with_options(Self, String, Json, RenderOptions) -> String raise TemplateError
+pub fn PartialStore::set(Self, String, String) -> Unit
+pub fn PartialStore::stats(Self, String) -> TemplateStats raise TemplateError
+pub fn PartialStore::validate(Self) -> Array[TemplateDiagnostic]
+
+pub(all) struct RenderOptions {
+  escape_html : Bool
+  standalone_lines : Bool
+  max_nesting_depth : Int
+  max_partial_depth : Int
+  max_output_length : Int
+  missing_partial : MissingPartialPolicy
+  detect_partial_cycles : Bool
+} derive(Eq, @debug.Debug)
+pub fn RenderOptions::default() -> Self
+pub fn RenderOptions::detect_partial_cycles(Self) -> Bool
+pub fn RenderOptions::escape_html(Self) -> Bool
+pub fn RenderOptions::max_nesting_depth(Self) -> Int
+pub fn RenderOptions::max_output_length(Self) -> Int
+pub fn RenderOptions::max_partial_depth(Self) -> Int
+pub fn RenderOptions::missing_partial(Self) -> MissingPartialPolicy
+pub fn RenderOptions::standalone_lines(Self) -> Bool
+pub fn RenderOptions::with_escape_html(Self, Bool) -> Self
+pub fn RenderOptions::with_max_nesting_depth(Self, Int) -> Self
+pub fn RenderOptions::with_max_output_length(Self, Int) -> Self
+pub fn RenderOptions::with_max_partial_depth(Self, Int) -> Self
+pub fn RenderOptions::with_missing_partial(Self, MissingPartialPolicy) -> Self
+pub fn RenderOptions::with_partial_cycle_detection(Self, Bool) -> Self
+pub fn RenderOptions::with_standalone_lines(Self, Bool) -> Self
+
 pub struct Template {
   source : String
   nodes : Array[Node]
 } derive(@debug.Debug)
 pub fn Template::render(Self, Json) -> String
+pub fn Template::render_many(Self, Array[Json]) -> Array[String]
+pub fn Template::render_many_with_options(Self, Array[Json], RenderOptions) -> Array[String] raise TemplateError
 pub fn Template::render_with(Self, Json, Map[String, String]) -> String
+pub fn Template::render_with_options(Self, Json, RenderOptions) -> String raise TemplateError
+pub fn Template::render_with_options_and_partials(Self, Json, Map[String, String], RenderOptions) -> String raise TemplateError
+pub fn Template::source_text(Self) -> String
+pub fn Template::stats(Self) -> TemplateStats
+pub fn Template::top_level_node_count(Self) -> Int
+
+pub(all) struct TemplateDiagnostic {
+  severity : DiagnosticSeverity
+  message : String
+  index : Int
+  line : Int
+  column : Int
+} derive(Eq, @debug.Debug)
+pub fn TemplateDiagnostic::summary(Self) -> String
+
+pub(all) struct TemplatePosition {
+  index : Int
+  line : Int
+  column : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct TemplateStats {
+  node_count : Int
+  text_node_count : Int
+  variable_count : Int
+  raw_variable_count : Int
+  section_count : Int
+  inverted_section_count : Int
+  partial_count : Int
+  max_depth : Int
+  has_custom_delimiters : Bool
+} derive(Eq, @debug.Debug)
+pub fn TemplateStats::complexity_score(Self) -> Int
+pub fn TemplateStats::is_empty(Self) -> Bool
+pub fn TemplateStats::summary(Self) -> String
 
 pub(all) enum Token {
   Text(String)

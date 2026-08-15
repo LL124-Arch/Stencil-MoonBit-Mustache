@@ -67,24 +67,24 @@ test "stress accepts parser depth boundary" {
 
 ///|
 test "stress renders empty input" {
-  assert_eq(render("", Json::empty_object()), "")
+  assert_eq(render("", {}), "")
 }
 
 ///|
 test "stress renders one character input" {
-  assert_eq(render("x", Json::empty_object()), "x")
+  assert_eq(render("x", {}), "x")
 }
 
 ///|
 test "stress renders a four kilobyte text block" {
   let text = repeated_text("abcd", 1024)
-  assert_eq(render(text, Json::empty_object()).length(), 4096)
+  assert_eq(render(text, {}).length(), 4096)
 }
 
 ///|
 test "stress renders a sixteen kilobyte text block" {
   let text = repeated_text("0123456789abcdef", 1024)
-  assert_eq(render(text, Json::empty_object()).length(), 16384)
+  assert_eq(render(text, {}).length(), 16384)
 }
 
 ///|
@@ -157,13 +157,13 @@ test "stress handles nested sections with false leaf" {
 ///|
 test "stress preserves CRLF in long text" {
   let text = repeated_text("line\r\n", 128)
-  assert_eq(render(text, Json::empty_object()), text)
+  assert_eq(render(text, {}), text)
 }
 
 ///|
 test "stress preserves LF in long text" {
   let text = repeated_text("line\n", 128)
-  assert_eq(render(text, Json::empty_object()), text)
+  assert_eq(render(text, {}), text)
 }
 
 ///|
@@ -192,7 +192,7 @@ test "stress keeps raw output unescaped at large size" {
 test "stress keeps missing partial lookup bounded" {
   let partials : Map[String, String] = Map([])
   assert_eq(
-    render_with_partials("before{{>none}}after", Json::empty_object(), partials),
+    render_with_partials("before{{>none}}after", {}, partials),
     "beforeafter",
   )
 }
@@ -200,9 +200,7 @@ test "stress keeps missing partial lookup bounded" {
 ///|
 test "stress applies indentation to a long partial" {
   let partial = repeated_text("x\ny\n", 32)
-  let output = render_with_partials("\t{{>block}}", Json::empty_object(), {
-    "block": partial,
-  })
+  let output = render_with_partials("\t{{>block}}", {}, { "block": partial })
   assert_eq(output, repeated_text("\tx\n\ty\n", 32))
 }
 

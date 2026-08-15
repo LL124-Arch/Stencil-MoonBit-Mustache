@@ -3,4 +3,6 @@ import {
   "LL124-Arch/stencil/src" @lib,
 }
 
-pkgtype(kind: "executable")
+options(
+  "is-main": true,
+)

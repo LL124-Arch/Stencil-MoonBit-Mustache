@@ -59,7 +59,7 @@ test "render implicit iterator" {
 
 ///|
 test "render missing variable" {
-  let result = render("Hello {{name}}!", Json::empty_object())
+  let result = render("Hello {{name}}!", {})
   assert_eq(result, "Hello !")
 }
 
@@ -78,10 +78,7 @@ test "render nested section" {
 
 ///|
 test "render comment stripped" {
-  let result = render(
-    "before{{! this is a comment }}after",
-    Json::empty_object(),
-  )
+  let result = render("before{{! this is a comment }}after", {})
   assert_eq(result, "beforeafter")
 }
 
@@ -130,21 +127,13 @@ test "render partial with indentation" {
 ///|
 test "render inline partial without extra indentation" {
   let partials = { "name": "MoonBit" }
-  let result = render_with_partials(
-    "Hello {{>name}}!",
-    Json::empty_object(),
-    partials,
-  )
+  let result = render_with_partials("Hello {{>name}}!", {}, partials)
   assert_eq(result, "Hello MoonBit!")
 }
 
 ///|
 test "render missing partial as empty string" {
-  let result = render_with_partials(
-    "A{{>missing}}B",
-    Json::empty_object(),
-    Map([]),
-  )
+  let result = render_with_partials("A{{>missing}}B", {}, Map([]))
   assert_eq(result, "AB")
 }
 
@@ -157,7 +146,7 @@ test "render object string values in nested section" {
 
 ///|
 test "render empty template" {
-  assert_eq(render("", Json::empty_object()), "")
+  assert_eq(render("", {}), "")
 }
 
 ///|
@@ -174,7 +163,7 @@ test "render empty string section is falsey" {
 
 ///|
 test "render invalid partial source is ignored" {
-  let result = render_with_partials("A{{>broken}}B", Json::empty_object(), {
+  let result = render_with_partials("A{{>broken}}B", {}, {
     "broken": "{{#missing}}",
   })
   assert_eq(result, "AB")
@@ -182,11 +171,9 @@ test "render invalid partial source is ignored" {
 
 ///|
 test "render partial preserves trailing newline indentation" {
-  let result = render_with_partials(
-    "items:\n  {{>item}}",
-    Json::empty_object(),
-    { "item": "one\ntwo\n" },
-  )
+  let result = render_with_partials("items:\n  {{>item}}", {}, {
+    "item": "one\ntwo\n",
+  })
   assert_eq(result, "items:\n  one\n  two\n")
 }
 
@@ -203,7 +190,7 @@ test "render partial chain rejects excessive nesting depth" {
     partials.set(name, body)
   }
   try {
-    ignore(render_with_partials("A{{>p0}}B", Json::empty_object(), partials))
+    ignore(render_with_partials("A{{>p0}}B", {}, partials))
     fail("expected partial nesting to be rejected")
   } catch {
     TemplateError(msg) =>
@@ -214,7 +201,7 @@ test "render partial chain rejects excessive nesting depth" {
 
 ///|
 test "render standalone comment removes its whole CRLF line" {
-  let result = render("A\r\n  {{! ignored }}\r\nB", Json::empty_object())
+  let result = render("A\r\n  {{! ignored }}\r\nB", {})
   assert_eq(result, "A\r\nB")
 }
 

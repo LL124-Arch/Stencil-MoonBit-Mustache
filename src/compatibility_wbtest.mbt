@@ -40,7 +40,7 @@ test "compatibility prefers nearest shadowed context" {
 
 ///|
 test "compatibility treats missing dotted path as empty" {
-  let data : Json = { "user": { "profile": Json::empty_object() } }
+  let data : Json = { "user": { "profile": {} } }
   assert_eq(render("X{{user.profile.name}}Y", data), "XY")
 }
 
@@ -57,10 +57,7 @@ test "compatibility treats false, null and empty string as falsey" {
 
 ///|
 test "compatibility treats empty object as a section context" {
-  assert_eq(
-    render("{{#object}}shown{{/object}}", { "object": Json::empty_object() }),
-    "shown",
-  )
+  assert_eq(render("{{#object}}shown{{/object}}", { "object": {} }), "shown")
 }
 
 ///|
@@ -83,10 +80,7 @@ test "compatibility keeps CRLF text around a section" {
 
 ///|
 test "compatibility ignores inline comments without changing surrounding text" {
-  assert_eq(
-    render("left {{! inline }} right", Json::empty_object()),
-    "left  right",
-  )
+  assert_eq(render("left {{! inline }} right", {}), "left  right")
 }
 
 ///|
@@ -97,33 +91,26 @@ test "compatibility removes standalone inverted control lines" {
 
 ///|
 test "compatibility preserves inline partial placement" {
-  assert_eq(
-    render_with_partials("A{{>x}}B", Json::empty_object(), { "x": "X" }),
-    "AXB",
-  )
+  assert_eq(render_with_partials("A{{>x}}B", {}, { "x": "X" }), "AXB")
 }
 
 ///|
 test "compatibility applies partial indentation to every LF line" {
-  let result = render_with_partials(
-    "root:\n\t{{>block}}",
-    Json::empty_object(),
-    { "block": "one\ntwo\nthree" },
-  )
+  let result = render_with_partials("root:\n\t{{>block}}", {}, {
+    "block": "one\ntwo\nthree",
+  })
   assert_eq(result, "root:\n\tone\n\ttwo\n\tthree")
 }
 
 ///|
 test "compatibility keeps partial trailing newline" {
-  let result = render_with_partials("{{>block}}", Json::empty_object(), {
-    "block": "one\ntwo\n",
-  })
+  let result = render_with_partials("{{>block}}", {}, { "block": "one\ntwo\n" })
   assert_eq(result, "one\ntwo\n")
 }
 
 ///|
 test "compatibility ignores malformed optional partial source" {
-  let result = render_with_partials("A{{>broken}}B", Json::empty_object(), {
+  let result = render_with_partials("A{{>broken}}B", {}, {
     "broken": "{{#missing}}",
   })
   assert_eq(result, "AB")
@@ -132,7 +119,7 @@ test "compatibility ignores malformed optional partial source" {
 ///|
 test "compatibility reports an unclosed tag with source index" {
   try {
-    ignore(render("prefix {{value", Json::empty_object()))
+    ignore(render("prefix {{value", {}))
     fail("expected unclosed tag error")
   } catch {
     TemplateError(msg) => assert_eq(msg, "unclosed tag at index 7")
@@ -143,7 +130,7 @@ test "compatibility reports an unclosed tag with source index" {
 ///|
 test "compatibility reports an unexpected close" {
   try {
-    ignore(render("{{/unexpected}}", Json::empty_object()))
+    ignore(render("{{/unexpected}}", {}))
     fail("expected unexpected close error")
   } catch {
     TemplateError(msg) => assert_eq(msg, "unexpected closing tag: unexpected")
@@ -154,7 +141,7 @@ test "compatibility reports an unexpected close" {
 ///|
 test "compatibility reports a mismatched close" {
   try {
-    ignore(render("{{#one}}{{/two}}", Json::empty_object()))
+    ignore(render("{{#one}}{{/two}}", {}))
     fail("expected mismatched close error")
   } catch {
     TemplateError(msg) =>

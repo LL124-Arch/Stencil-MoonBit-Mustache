@@ -1,6 +1,6 @@
 # OSC2026 Acceptance Checklist
 
-Last updated: 2026-08-10
+Last updated: 2026-08-15
 
 This checklist maps the public OSC2026 acceptance baseline to concrete evidence in this repository.
 
@@ -34,7 +34,8 @@ Reference sources:
 | GitHub CI | `.github/workflows/ci.yml` |
 | GitLink CI | `.gitlink/workflows/ci.yml` |
 | Tests | `src/*_wbtest.mbt` |
-| Compatibility and boundary tests | `src/compatibility_wbtest.mbt`, `src/stress_wbtest.mbt`, parser/scanner tests |
+| Compatibility and boundary tests | `src/compatibility.mbt`, compatibility matrix, fixture/security/limits tests |
+| Configurable production API | `src/options.mbt`, `src/partials.mbt`, `src/diagnostics.mbt`, `src/analysis.mbt` |
 | Performance evidence | `scripts/benchmark.ps1`, `cli/main.mbt`, `docs/performance.md` |
 | License | `LICENSE` |
 | Attribution and third-party notice | `NOTICE` |
@@ -58,12 +59,13 @@ These steps are enforced both in CI and in the local acceptance script.
 
 ## Final review evidence
 
-- The current test suite contains more than 100 deterministic tests covering the
+- The current test suite contains more than 200 deterministic tests covering the
   documented Mustache core, malformed input, Unicode, CRLF, long text, deep
   sections, large lists, partial indentation, delimiter changes, and recursive
   partial limits.
-- The benchmark records both compile-plus-render and compiled-template rendering
-  and verifies equal output checksums before reporting results.
+- The benchmark uses a four-item HTML catalog workload, 200 compiled renders,
+  a byte-length total, and a deterministic weighted checksum. The CLI emits
+  machine-readable workload, iteration, output length, checksum, and consistency.
 - GitHub and GitLink are maintained as synchronized public mirrors. The final
   review must check both remote HEADs, default branches, single-contributor
   histories, and the Mooncakes metadata after the release commit.
