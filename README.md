@@ -120,6 +120,32 @@ let html = @stencil.render_with_options_and_partials(template, data, partials, o
 provides a deterministic application boundary without introducing filesystem
 or network access into the library.
 
+### `TemplateCatalog` and batch rendering
+
+`TemplateCatalog` is the application-level boundary for a group of named
+templates. It owns source text, lazily compiled templates, revision numbers,
+dependency edges, health reports, and cache invalidation when a source is
+replaced. This is useful for page bundles, email layouts, documentation builds,
+and configuration generators that must validate a manifest before serving it.
+
+```moonbit
+let catalog = @stencil.TemplateCatalog::from_entries([
+  @stencil.TemplateEntry::new("card", "<h1>{{title}}</h1>"),
+])
+let report = catalog.render_many_named(
+  "card",
+  [{ "title": "MoonBit" }, { "title": "Stencil" }],
+  {},
+  @stencil.RenderOptions::default(),
+)
+println(report.machine_summary())
+```
+
+`render_jobs` preserves successful outputs and failure details instead of
+discarding the whole batch. `dependency_report` catches missing partials and
+cycles, while `health_report` combines compile, syntax, and dependency checks.
+See [catalog usage and operational notes](docs/catalog.md).
+
 ### Diagnostics and analysis
 
 `diagnose(source)` returns stable severity, message, byte index, line, and
@@ -268,6 +294,11 @@ build, interface generation, and multi-target tests:
 
 The local acceptance script additionally runs full `moon fmt --check` under the
 pinned 0.10.3 toolchain.
+
+The executable package metadata intentionally remains compatible with the
+competition-pinned 0.10.3 toolchain. With newer formatters, CI and the local
+acceptance script check `src` formatting while `moon check`, `moon build`,
+`moon info`, and all target tests validate the complete CLI package.
 
 Both GitHub Actions and GitLink CI are included:
 

@@ -71,6 +71,136 @@ pub(all) struct BenchmarkWorkload {
   iterations : Int
 } derive(@debug.Debug)
 
+pub(all) struct CatalogCompileError {
+  template_name : String
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn CatalogCompileError::message(Self) -> String
+pub fn CatalogCompileError::new(String, String) -> Self
+pub fn CatalogCompileError::template_name(Self) -> String
+
+pub(all) struct CatalogCompileReport {
+  template_count : Int
+  compiled_count : Int
+  compiled_before : Int
+  error_count : Int
+  errors : Array[CatalogCompileError]
+  revision : Int
+} derive(@debug.Debug)
+pub fn CatalogCompileReport::compiled_before(Self) -> Int
+pub fn CatalogCompileReport::compiled_count(Self) -> Int
+pub fn CatalogCompileReport::error_count(Self) -> Int
+pub fn CatalogCompileReport::errors(Self) -> Array[CatalogCompileError]
+pub fn CatalogCompileReport::is_valid(Self) -> Bool
+pub fn CatalogCompileReport::revision(Self) -> Int
+pub fn CatalogCompileReport::summary(Self) -> String
+pub fn CatalogCompileReport::template_count(Self) -> Int
+
+pub(all) struct CatalogDependencyReport {
+  missing : Array[(String, String)]
+  cycles : Array[String]
+  edge_count : Int
+} derive(@debug.Debug)
+pub fn CatalogDependencyReport::cycle_count(Self) -> Int
+pub fn CatalogDependencyReport::cycles(Self) -> Array[String]
+pub fn CatalogDependencyReport::edge_count(Self) -> Int
+pub fn CatalogDependencyReport::is_valid(Self) -> Bool
+pub fn CatalogDependencyReport::missing(Self) -> Array[(String, String)]
+pub fn CatalogDependencyReport::missing_count(Self) -> Int
+pub fn CatalogDependencyReport::summary(Self) -> String
+
+pub(all) struct CatalogDiagnostic {
+  template_name : String
+  severity : DiagnosticSeverity
+  message : String
+  index : Int
+  line : Int
+  column : Int
+} derive(Eq, @debug.Debug)
+pub fn CatalogDiagnostic::column(Self) -> Int
+pub fn CatalogDiagnostic::from_template(String, TemplateDiagnostic) -> Self
+pub fn CatalogDiagnostic::line(Self) -> Int
+pub fn CatalogDiagnostic::message(Self) -> String
+pub fn CatalogDiagnostic::severity(Self) -> DiagnosticSeverity
+pub fn CatalogDiagnostic::summary(Self) -> String
+pub fn CatalogDiagnostic::template_name(Self) -> String
+
+pub(all) struct CatalogHealthReport {
+  compile : CatalogCompileReport
+  diagnostics : Array[CatalogDiagnostic]
+  dependencies : CatalogDependencyReport
+} derive(@debug.Debug)
+pub fn CatalogHealthReport::compile(Self) -> CatalogCompileReport
+pub fn CatalogHealthReport::dependencies(Self) -> CatalogDependencyReport
+pub fn CatalogHealthReport::diagnostics(Self) -> Array[CatalogDiagnostic]
+pub fn CatalogHealthReport::is_healthy(Self) -> Bool
+pub fn CatalogHealthReport::summary(Self) -> String
+
+pub(all) struct CatalogRenderFailure {
+  template_name : String
+  message : String
+  job_index : Int
+} derive(@debug.Debug)
+pub fn CatalogRenderFailure::job_index(Self) -> Int
+pub fn CatalogRenderFailure::message(Self) -> String
+pub fn CatalogRenderFailure::template_name(Self) -> String
+
+pub(all) struct CatalogRenderJob {
+  template_name : String
+  data : Json
+} derive(@debug.Debug)
+pub fn CatalogRenderJob::data(Self) -> Json
+pub fn CatalogRenderJob::new(String, Json) -> Self
+pub fn CatalogRenderJob::template_name(Self) -> String
+
+pub(all) struct CatalogRenderOutput {
+  template_name : String
+  content : String
+  length : Int
+  checksum : Int
+  job_index : Int
+} derive(@debug.Debug)
+pub fn CatalogRenderOutput::checksum(Self) -> Int
+pub fn CatalogRenderOutput::content(Self) -> String
+pub fn CatalogRenderOutput::job_index(Self) -> Int
+pub fn CatalogRenderOutput::length(Self) -> Int
+pub fn CatalogRenderOutput::template_name(Self) -> String
+
+pub(all) struct CatalogRenderReport {
+  total_jobs : Int
+  success_count : Int
+  failure_count : Int
+  total_output_length : Int
+  checksum : Int
+  outputs : Array[CatalogRenderOutput]
+  failures : Array[CatalogRenderFailure]
+} derive(@debug.Debug)
+pub fn CatalogRenderReport::all_outputs_nonempty(Self) -> Bool
+pub fn CatalogRenderReport::average_output_length(Self) -> Int
+pub fn CatalogRenderReport::checksum(Self) -> Int
+pub fn CatalogRenderReport::contents(Self) -> Array[String]
+pub fn CatalogRenderReport::failure_count(Self) -> Int
+pub fn CatalogRenderReport::failure_for_job(Self, Int) -> CatalogRenderFailure?
+pub fn CatalogRenderReport::failure_messages(Self) -> Array[String]
+pub fn CatalogRenderReport::failure_names(Self) -> Array[String]
+pub fn CatalogRenderReport::failures(Self) -> Array[CatalogRenderFailure]
+pub fn CatalogRenderReport::first_failure(Self) -> CatalogRenderFailure?
+pub fn CatalogRenderReport::first_output(Self) -> CatalogRenderOutput?
+pub fn CatalogRenderReport::has_failures(Self) -> Bool
+pub fn CatalogRenderReport::is_complete(Self) -> Bool
+pub fn CatalogRenderReport::machine_summary(Self) -> String
+pub fn CatalogRenderReport::matches_contents(Self, Array[String]) -> Bool
+pub fn CatalogRenderReport::max_output_length(Self) -> Int
+pub fn CatalogRenderReport::merge(Self, Self) -> Self
+pub fn CatalogRenderReport::min_output_length(Self) -> Int
+pub fn CatalogRenderReport::output_for_job(Self, Int) -> CatalogRenderOutput?
+pub fn CatalogRenderReport::outputs(Self) -> Array[CatalogRenderOutput]
+pub fn CatalogRenderReport::success_count(Self) -> Int
+pub fn CatalogRenderReport::successful_template_names(Self) -> Array[String]
+pub fn CatalogRenderReport::summary(Self) -> String
+pub fn CatalogRenderReport::total_jobs(Self) -> Int
+pub fn CatalogRenderReport::total_output_length(Self) -> Int
+
 pub(all) struct CompatibilityCase {
   name : String
   template : String
@@ -170,6 +300,48 @@ pub fn Template::source_text(Self) -> String
 pub fn Template::stats(Self) -> TemplateStats
 pub fn Template::top_level_node_count(Self) -> Int
 
+pub struct TemplateCatalog {
+  sources : Map[String, String]
+  compiled : Map[String, Template]
+  mut revision_number : Int
+} derive(@debug.Debug)
+pub fn TemplateCatalog::clear(Self) -> Unit
+pub fn TemplateCatalog::compile_all(Self) -> Map[String, Template] raise TemplateError
+pub fn TemplateCatalog::compile_named(Self, String) -> Template raise TemplateError
+pub fn TemplateCatalog::compile_report(Self) -> CatalogCompileReport
+pub fn TemplateCatalog::compiled_count(Self) -> Int
+pub fn TemplateCatalog::contains(Self, String) -> Bool
+pub fn TemplateCatalog::dependencies(Self, String) -> Array[String] raise TemplateError
+pub fn TemplateCatalog::dependency_edges(Self) -> Array[(String, String)]
+pub fn TemplateCatalog::dependency_report(Self) -> CatalogDependencyReport
+pub fn TemplateCatalog::dependents(Self, String) -> Array[String]
+pub fn TemplateCatalog::diagnostics(Self) -> Array[CatalogDiagnostic]
+pub fn TemplateCatalog::empty_source_count(Self) -> Int
+pub fn TemplateCatalog::from_entries(Array[TemplateEntry]) -> Self raise TemplateError
+pub fn TemplateCatalog::health_report(Self) -> CatalogHealthReport
+pub fn TemplateCatalog::is_compiled(Self, String) -> Bool
+pub fn TemplateCatalog::manifest_summary(Self) -> String
+pub fn TemplateCatalog::names(Self) -> Array[String]
+pub fn TemplateCatalog::names_containing(Self, String) -> Array[String]
+pub fn TemplateCatalog::new() -> Self
+pub fn TemplateCatalog::register(Self, String, String) -> Unit raise TemplateError
+pub fn TemplateCatalog::register_many(Self, Array[TemplateEntry]) -> Unit raise TemplateError
+pub fn TemplateCatalog::remove(Self, String) -> Bool
+pub fn TemplateCatalog::render_all(Self, Json, RenderOptions) -> CatalogRenderReport
+pub fn TemplateCatalog::render_job_range(Self, Array[CatalogRenderJob], Int, Int, Map[String, String], RenderOptions) -> CatalogRenderReport
+pub fn TemplateCatalog::render_jobs(Self, Array[CatalogRenderJob], Map[String, String], RenderOptions) -> CatalogRenderReport
+pub fn TemplateCatalog::render_many_named(Self, String, Array[Json], Map[String, String], RenderOptions) -> CatalogRenderReport
+pub fn TemplateCatalog::render_named(Self, String, Json, Map[String, String], RenderOptions) -> String raise TemplateError
+pub fn TemplateCatalog::render_one_job(Self, CatalogRenderJob, Map[String, String], RenderOptions) -> CatalogRenderReport
+pub fn TemplateCatalog::render_self_contained(Self, String, Json, RenderOptions) -> String raise TemplateError
+pub fn TemplateCatalog::revision(Self) -> Int
+pub fn TemplateCatalog::source(Self, String) -> String?
+pub fn TemplateCatalog::source_length(Self) -> Int
+pub fn TemplateCatalog::stats(Self, String) -> TemplateStats raise TemplateError
+pub fn TemplateCatalog::stats_all(Self) -> Array[(String, TemplateStats)] raise TemplateError
+pub fn TemplateCatalog::template(Self, String) -> Template raise TemplateError
+pub fn TemplateCatalog::template_count(Self) -> Int
+
 pub(all) struct TemplateDiagnostic {
   severity : DiagnosticSeverity
   message : String
@@ -178,6 +350,14 @@ pub(all) struct TemplateDiagnostic {
   column : Int
 } derive(Eq, @debug.Debug)
 pub fn TemplateDiagnostic::summary(Self) -> String
+
+pub(all) struct TemplateEntry {
+  name : String
+  source : String
+} derive(Eq, @debug.Debug)
+pub fn TemplateEntry::name(Self) -> String
+pub fn TemplateEntry::new(String, String) -> Self
+pub fn TemplateEntry::source(Self) -> String
 
 pub(all) struct TemplatePosition {
   index : Int

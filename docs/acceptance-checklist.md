@@ -36,6 +36,7 @@ Reference sources:
 | Tests | `src/*_wbtest.mbt` |
 | Compatibility and boundary tests | `src/compatibility.mbt`, compatibility matrix, fixture/security/limits tests |
 | Configurable production API | `src/options.mbt`, `src/partials.mbt`, `src/diagnostics.mbt`, `src/analysis.mbt` |
+| Named-template application pipeline | `src/catalog*.mbt`, `docs/catalog.md`, catalog tests |
 | Performance evidence | `scripts/benchmark.ps1`, `cli/main.mbt`, `docs/performance.md` |
 | MIT license and package metadata | `LICENSE`, `moon.mod`, README license badge |
 | Attribution and third-party notice | `NOTICE` |
@@ -67,8 +68,8 @@ These steps are enforced both in CI and in the local acceptance script.
 
 ## Final review evidence
 
-- The current test suite contains more than 200 deterministic tests covering the
-  documented Mustache core, malformed input, Unicode, CRLF, long text, deep
+- The current test suite contains 246 deterministic tests covering the
+  documented Mustache core, named-template batches, malformed input, Unicode, CRLF, long text, deep
   sections, large lists, partial indentation, delimiter changes, and recursive
   partial limits.
 - The benchmark uses a four-item HTML catalog workload, 200 compiled renders,

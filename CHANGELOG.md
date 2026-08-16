@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.5 - 2026-08-16
+
+- Added `TemplateCatalog` for named template manifests, revision-aware compile
+  caching, dependency edges, cycle detection, and combined health reports.
+- Added failure-preserving batch rendering with output metrics, checksums,
+  queue partitioning, report merging, and golden-content verification.
+- Added an application guide covering page bundles, email batches, configuration
+  generation, startup validation, and deliberate I/O boundaries.
+- Added 11 catalog-focused tests; the deterministic suite now contains 246
+  passing tests across WASM, WASM-GC, JS, and Native targets.
+- Kept the CLI package metadata compatible with MoonBit 0.10.3 while making the
+  latest-toolchain source-format check explicit and reproducible.
+
 ## 0.1.4 - 2026-08-15
 
 - Switched the project and Mooncakes package metadata to the MIT License to
