@@ -1,16 +1,54 @@
 ///|
-fn demo() -> Unit {
-  let template = "Hello {{name}}! Welcome to {{project}}."
+fn command_help() -> String {
+  let output =
+    #|Stencil Studio · MoonBit Mustache engine
+    #|
+    #|A small, safe, composable template runtime for MoonBit.
+    #|
+    #|COMMANDS
+    #|  demo           Explore interpolation, sections, and HTML escaping
+    #|  analyze        Inspect template structure and complexity
+    #|  compatibility  Run the Mustache compatibility suite
+    #|  benchmark      Run the deterministic rendering benchmark
+    #|  help           Show this command map
+    #|
+    #|Try it: moon run cli -- demo
+  output
+}
+
+///|
+fn demo_output() -> String {
+  let template = "<article>\n  <h1>{{title}}</h1>\n  {{#features}}<p>✓ {{.}}</p>\n  {{/features}}\n  <div>{{content}}</div>\n</article>"
   let data : Json = {
-    "name": "developer",
-    "project": "Stencil Template Engine",
+    "title": "Stencil / Quick Tour",
+    "features": ["Sections", "Safe output", "MoonBit-native"],
+    "content": "<strong>MoonBit</strong>",
   }
-  try {
-    let result = @lib.render(template, data)
-    println(result)
-  } catch {
-    @lib.TemplateError(msg) => println("Error: \{msg}")
+  let rendered = @lib.render(template, data) catch {
+    @lib.TemplateError(msg) => "[error] \{msg}"
   }
+  let header =
+    #|STENCIL STUDIO / DEFAULT DEMO
+    #|────────────────────────────────────────────────────────────
+    #|TEMPLATE
+    #|  <h1>{{title}}</h1>  ·  {{#features}}...{{/features}}
+    #|
+    #|DATA
+    #|  title     = Stencil / Quick Tour
+    #|  features  = [Sections, Safe output, MoonBit-native]
+    #|  content   = <strong>MoonBit</strong>
+    #|
+    #|RENDERED OUTPUT
+  let footer =
+    #|────────────────────────────────────────────────────────────
+    #|[ok] Escaped variables are safe by default.
+    #|[info] Run `moon run cli -- help` to explore the full command map.
+  header + "\n" + rendered + "\n" + footer
+}
+
+///|
+fn demo() -> Unit {
+  println(demo_output())
 }
 
 ///|
@@ -87,6 +125,8 @@ fn main {
     analyze_demo()
   } else if wants_command(args, "compatibility") {
     compatibility_demo()
+  } else if wants_command(args, "help") {
+    println(command_help())
   } else {
     demo()
   }

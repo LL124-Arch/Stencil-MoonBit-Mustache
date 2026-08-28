@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Reworked the CLI into a Stencil Studio terminal tour with a clearer command
+  map and structured template/data/rendered-output panels.
+- Added CLI behavior tests for the help and default demo presentation.
+- Reorganized the README around product value, feature discovery, quick start,
+  API usage, compatibility boundaries, and verification.
+
 ## 0.1.5 - 2026-08-16
 
 - Added `TemplateCatalog` for named template manifests, revision-aware compile
