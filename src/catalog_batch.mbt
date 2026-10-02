@@ -15,7 +15,7 @@ pub fn CatalogRenderJob::new(
   template_name : String,
   data : Json,
 ) -> CatalogRenderJob {
-  { template_name, data }
+  { template_name, data, }
 }
 
 ///|
@@ -447,14 +447,14 @@ pub fn CatalogRenderReport::merge(
     outputs.push(output)
   }
   for output in other.outputs {
-    outputs.push({ ..output, job_index: output.job_index + self.total_jobs })
+    outputs.push({ ..output, job_index: output.job_index + self.total_jobs, })
   }
   let failures : Array[CatalogRenderFailure] = []
   for failure in self.failures {
     failures.push(failure)
   }
   for failure in other.failures {
-    failures.push({ ..failure, job_index: failure.job_index + self.total_jobs })
+    failures.push({ ..failure, job_index: failure.job_index + self.total_jobs, })
   }
   {
     total_jobs: self.total_jobs + other.total_jobs,

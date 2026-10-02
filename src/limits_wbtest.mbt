@@ -2,7 +2,7 @@
 
 ///|
 fn nested_section_source(depth : Int) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for _ in 0..<depth {
     buf.write_string("{{#x}}")
   }

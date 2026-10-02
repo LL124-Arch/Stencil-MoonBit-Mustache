@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Updated executable package metadata and formatting for current MoonBit
+  toolchains; CI now checks formatting across the complete module.
+- Replaced deprecated `StringBuilder::new()` calls and explicitly forwarded
+  derived `Debug` and `Eq` methods so strict checks pass on MoonBit 0.10.14.
+- Refreshed generated public interfaces and verified 248 tests on each of the
+  WASM, WASM-GC, JavaScript, and native targets.
 - Reworked the CLI into a Stencil Studio terminal tour with a clearer command
   map and structured template/data/rendered-output panels.
 - Added CLI behavior tests for the help and default demo presentation.

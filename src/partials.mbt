@@ -12,7 +12,7 @@ pub(all) struct PartialStore {
 ///|
 /// Create an empty registry.
 pub fn PartialStore::new() -> PartialStore {
-  { sources: Map([]) }
+  { sources: Map([]), }
 }
 
 ///|

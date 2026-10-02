@@ -12,7 +12,7 @@ pub(all) struct TemplateEntry {
 
 ///|
 pub fn TemplateEntry::new(name : String, source : String) -> TemplateEntry {
-  { name, source }
+  { name, source, }
 }
 
 ///|
@@ -39,7 +39,7 @@ pub struct TemplateCatalog {
 
 ///|
 pub fn TemplateCatalog::new() -> TemplateCatalog {
-  { sources: Map([]), compiled: Map([]), revision_number: 0 }
+  { sources: Map([]), compiled: Map([]), revision_number: 0, }
 }
 
 ///|

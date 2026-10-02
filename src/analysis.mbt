@@ -26,24 +26,24 @@ fn node_stats(node : Node, depth : Int) -> TemplateStats {
   let base = empty_stats()
   match node {
     TextNode(_) =>
-      { ..base, node_count: 1, text_node_count: 1, max_depth: depth }
+      { ..base, node_count: 1, text_node_count: 1, max_depth: depth, }
     VarNode(_, escaped) =>
       if escaped {
-        { ..base, node_count: 1, variable_count: 1, max_depth: depth }
+        { ..base, node_count: 1, variable_count: 1, max_depth: depth, }
       } else {
-        { ..base, node_count: 1, raw_variable_count: 1, max_depth: depth }
+        { ..base, node_count: 1, raw_variable_count: 1, max_depth: depth, }
       }
     SectionNode(_, children, inverted) => {
       let child_stats = nodes_stats(children, depth + 1)
       let section_stats = if inverted {
-        { ..base, node_count: 1, inverted_section_count: 1, max_depth: depth }
+        { ..base, node_count: 1, inverted_section_count: 1, max_depth: depth, }
       } else {
-        { ..base, node_count: 1, section_count: 1, max_depth: depth }
+        { ..base, node_count: 1, section_count: 1, max_depth: depth, }
       }
       merge_stats(section_stats, child_stats)
     }
     PartialNode(_, _) =>
-      { ..base, node_count: 1, partial_count: 1, max_depth: depth }
+      { ..base, node_count: 1, partial_count: 1, max_depth: depth, }
   }
 }
 

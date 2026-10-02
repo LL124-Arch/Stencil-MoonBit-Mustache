@@ -2,7 +2,7 @@
 
 ///|
 fn repeated_text(text : String, count : Int) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for i = 0; i < count; i = i + 1 {
     buf.write_string(text)
   }
@@ -11,7 +11,7 @@ fn repeated_text(text : String, count : Int) -> String {
 
 ///|
 fn nested_template(depth : Int) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for i = 0; i < depth; i = i + 1 {
     buf.write_string("{{#level}}")
   }

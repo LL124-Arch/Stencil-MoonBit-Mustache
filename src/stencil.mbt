@@ -56,7 +56,7 @@ pub fn render_with_options_and_partials(
 pub fn compile(source : String) -> Template raise TemplateError {
   let tokens = scan(source)
   let nodes = parse(tokens)
-  { source, nodes }
+  { source, nodes, }
 }
 
 ///|
