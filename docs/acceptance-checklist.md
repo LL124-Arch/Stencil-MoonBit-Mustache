@@ -47,12 +47,10 @@ Reference sources:
 
 ## Notes for reviewers
 
-- MoonBit CLI `moonc v0.10.3` or newer exposes strict warning mode on `moon check` and `moon test`, but not on `moon fmt` or `moon info`.
-- This repository therefore uses the strict equivalents recommended by the current CLI help:
-  - local acceptance: `moon fmt --check`
-  - hosted CI: `moon fmt --check src` (the MoonBit 0.10.3 formatter accepts the
-    executable package metadata required by this repository; newer formatters
-    may rewrite that metadata, so CI keeps the source formatter check stable)
+- The current package metadata uses `pkgtype(kind: "executable")`; use a MoonBit
+  toolchain that supports this form (verified with `moonc v0.10.14`).
+- Local acceptance and hosted CI use the same verification commands:
+  - `moon fmt --check`
   - `moon build --target wasm,wasm-gc,js`
   - `moon info --target all`
   - `git diff --ignore-blank-lines --exit-code` (ignores toolchain-only blank-line churn)
@@ -60,15 +58,11 @@ Reference sources:
   - `moon test --deny-warn --target ...`
   - `moon run cli -- benchmark`
 
-The CI source-format scope does not weaken executable validation: `moon check`,
-`moon build`, `moon info`, interface generation, and multi-target tests still
-discover and validate the complete `cli` package.
-
 These steps are enforced both in CI and in the local acceptance script.
 
 ## Final review evidence
 
-- The current test suite contains 246 deterministic tests covering the
+- The current test suite contains 248 deterministic tests covering the
   documented Mustache core, named-template batches, malformed input, Unicode, CRLF, long text, deep
   sections, large lists, partial indentation, delimiter changes, and recursive
   partial limits.

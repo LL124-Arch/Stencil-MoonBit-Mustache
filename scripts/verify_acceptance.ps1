@@ -161,13 +161,7 @@ try {
   moon version --all
 
   Write-Section "Verification"
-  $moonVersion = (moon --version 2>&1 | Select-String -Pattern 'moonc v(\d+\.\d+\.\d+)' | Select-Object -First 1).Matches.Groups[1].Value
-  if ($moonVersion -eq "0.10.3") {
-    Invoke-Step "moon fmt --check" { moon fmt --check }
-  } else {
-    Write-Host "using source-only format check for MoonBit $moonVersion; cli/moon.pkg keeps 0.10.3-compatible executable metadata"
-    Invoke-Step "moon fmt --check src" { moon fmt --check src }
-  }
+  Invoke-Step "moon fmt --check" { moon fmt --check }
   Invoke-Step "moon check --deny-warn --target all" { moon check --deny-warn --target all }
   Invoke-Step "moon build --target wasm,wasm-gc,js" { moon build --target wasm,wasm-gc,js }
   Invoke-Step "moon info --target all" { moon info --target all }
@@ -175,20 +169,7 @@ try {
   Invoke-Step "moon test --deny-warn --target wasm,wasm-gc,js" {
     moon test --deny-warn --target wasm,wasm-gc,js
   }
-  # MoonBit 0.10.3's legacy native assembler cannot create artifacts when the
-  # workspace path contains non-ASCII characters. Keep the pinned toolchain
-  # check honest: all portable targets still run, while native is covered by
-  # the latest toolchain and CI on ordinary ASCII checkout paths.
-  $hasNonAsciiRepoPath = [bool]($RepoRoot.ToCharArray() | Where-Object { [int]$_ -gt 127 })
-  $moonExecutable = (Get-Command moon).Source
-  $legacyPinnedToolchain = $moonExecutable -match 'moon-0\.10\.3'
-  $nativeBlockedByLegacyPath = $legacyPinnedToolchain -and $hasNonAsciiRepoPath
-  if ($legacyPinnedToolchain) {
-    $nativeBlockedByLegacyPath = $true
-  }
-  if ($nativeBlockedByLegacyPath) {
-    Write-Host "-- skipping native test under MoonBit 0.10.3: legacy assembler cannot write native artifacts under a non-ASCII workspace path; latest toolchain/CI covers native"
-  } elseif (Test-CompilerAvailable) {
+  if (Test-CompilerAvailable) {
     Invoke-Step "moon build --target native" {
       moon build --target native
     }

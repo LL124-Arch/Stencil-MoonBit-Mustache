@@ -2,7 +2,7 @@
 /// HTML 特殊字符转义
 /// 对 & < > " ' 进行实体替换，防止 XSS 注入
 pub fn escape_html(raw : String) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for i = 0; i < raw.length(); i = i + 1 {
     let ch = raw[i].to_int().unsafe_to_char()
     match ch {

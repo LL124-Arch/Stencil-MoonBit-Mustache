@@ -40,8 +40,7 @@ jobs:
           moon update
 
       - name: Check formatting
-        run: |
-          moon fmt --check src
+        run: moon fmt --check
 
       - name: Check build
         run: moon check --deny-warn --target all

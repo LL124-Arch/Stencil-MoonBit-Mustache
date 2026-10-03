@@ -76,7 +76,7 @@ fn position_at(source : String, index : Int) -> TemplatePosition {
     }
     i += 1
   }
-  { index: safe_index, line, column }
+  { index: safe_index, line, column, }
 }
 
 ///|

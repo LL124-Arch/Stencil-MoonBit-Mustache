@@ -80,7 +80,7 @@ pub struct Context {
 
 ///|
 pub fn Context::new(data : Json) -> Context {
-  { stack: [data] }
+  { stack: [data], }
 }
 
 ///|

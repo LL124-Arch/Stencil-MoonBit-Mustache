@@ -24,7 +24,7 @@ pub fn CompatibilityCase::new(
   data : Json,
   expected : String,
 ) -> CompatibilityCase {
-  { name, template, data, expected }
+  { name, template, data, expected, }
 }
 
 ///|

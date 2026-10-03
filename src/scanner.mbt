@@ -79,7 +79,7 @@ pub fn scan(input : String) -> Array[Token] raise TemplateError {
 /// Partial lines are intentionally preserved because the parser uses their
 /// leading whitespace to implement indentation propagation.
 fn normalize_standalone_controls(input : String) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   let mut line_start = 0
   let mut i = 0
   while i < input.length() {

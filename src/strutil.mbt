@@ -64,7 +64,7 @@ fn is_whitespace(ch : Char) -> Bool {
 ///|
 /// 提取 s[start..end) 的子串
 fn substring(s : String, start : Int, end : Int) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   let mut i = start
   while i < end && i < s.length() {
     buf.write_char(char_at(s, i))
@@ -83,7 +83,7 @@ fn substring_from(s : String, start : Int) -> String {
 /// 按单个字符分割字符串
 fn split_by_char(s : String, sep : Char) -> Array[String] {
   let parts : Array[String] = []
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for i = 0; i < s.length(); i = i + 1 {
     if char_at(s, i) == sep {
       parts.push(buf.to_string())

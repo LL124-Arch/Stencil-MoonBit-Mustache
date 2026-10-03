@@ -39,7 +39,7 @@ fn render_nodes_with_options(
   active_partials : Array[String],
 ) -> String raise TemplateError {
   enforce_nesting_limit(options, depth)
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   let mut i = 0
   while i < nodes.length() {
     match nodes[i] {
@@ -114,7 +114,7 @@ fn render_section_with_options(
       if items.length() == 0 {
         return ""
       }
-      let buf = StringBuilder::new()
+      let buf = StringBuilder()
       let mut idx = 0
       while idx < items.length() {
         ctx.push(items[idx])
@@ -218,7 +218,7 @@ fn apply_partial_indent(content : String, indent : String) -> String {
   if indent.length() == 0 {
     return content
   }
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   buf.write_string(indent)
   for i = 0; i < content.length(); i = i + 1 {
     let ch = char_at(content, i)

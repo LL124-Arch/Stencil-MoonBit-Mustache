@@ -14,7 +14,7 @@ pub fn CatalogCompileError::new(
   template_name : String,
   message : String,
 ) -> CatalogCompileError {
-  { template_name, message }
+  { template_name, message, }
 }
 
 ///|
@@ -232,7 +232,7 @@ pub fn TemplateCatalog::dependency_report(
     let path : Array[String] = []
     find_catalog_cycles(self, name, path, visited, cycles)
   }
-  { missing, cycles, edge_count: edges.length() }
+  { missing, cycles, edge_count: edges.length(), }
 }
 
 ///|
@@ -285,7 +285,7 @@ fn path_suffix(path : Array[String], name : String) -> Array[String] {
 /// Join a cycle path without pulling a string formatting dependency into the
 /// public API. The final name is repeated to make the loop obvious in logs.
 fn join_names(names : Array[String], final_name : String) -> String {
-  let builder = StringBuilder::new()
+  let builder = StringBuilder()
   let mut first = true
   for name in names {
     if !first {

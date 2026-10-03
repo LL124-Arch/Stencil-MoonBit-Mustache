@@ -54,6 +54,7 @@ pub fn value_to_string(Json) -> String
 pub(all) suberror TemplateError {
   TemplateError(String)
 } derive(@debug.Debug)
+pub fn TemplateError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
 pub(all) struct BenchmarkResult {
@@ -63,6 +64,7 @@ pub(all) struct BenchmarkResult {
   total_output_length : Int
   checksum : Int
 } derive(@debug.Debug)
+pub fn BenchmarkResult::to_repr(Self) -> @debug.Repr
 
 pub(all) struct BenchmarkWorkload {
   name : String
@@ -70,14 +72,18 @@ pub(all) struct BenchmarkWorkload {
   data : Json
   iterations : Int
 } derive(@debug.Debug)
+pub fn BenchmarkWorkload::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogCompileError {
   template_name : String
   message : String
 } derive(Eq, @debug.Debug)
+pub fn CatalogCompileError::equal(Self, Self) -> Bool
 pub fn CatalogCompileError::message(Self) -> String
 pub fn CatalogCompileError::new(String, String) -> Self
+pub fn CatalogCompileError::not_equal(Self, Self) -> Bool
 pub fn CatalogCompileError::template_name(Self) -> String
+pub fn CatalogCompileError::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogCompileReport {
   template_count : Int
@@ -95,6 +101,7 @@ pub fn CatalogCompileReport::is_valid(Self) -> Bool
 pub fn CatalogCompileReport::revision(Self) -> Int
 pub fn CatalogCompileReport::summary(Self) -> String
 pub fn CatalogCompileReport::template_count(Self) -> Int
+pub fn CatalogCompileReport::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogDependencyReport {
   missing : Array[(String, String)]
@@ -108,6 +115,7 @@ pub fn CatalogDependencyReport::is_valid(Self) -> Bool
 pub fn CatalogDependencyReport::missing(Self) -> Array[(String, String)]
 pub fn CatalogDependencyReport::missing_count(Self) -> Int
 pub fn CatalogDependencyReport::summary(Self) -> String
+pub fn CatalogDependencyReport::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogDiagnostic {
   template_name : String
@@ -118,12 +126,15 @@ pub(all) struct CatalogDiagnostic {
   column : Int
 } derive(Eq, @debug.Debug)
 pub fn CatalogDiagnostic::column(Self) -> Int
+pub fn CatalogDiagnostic::equal(Self, Self) -> Bool
 pub fn CatalogDiagnostic::from_template(String, TemplateDiagnostic) -> Self
 pub fn CatalogDiagnostic::line(Self) -> Int
 pub fn CatalogDiagnostic::message(Self) -> String
+pub fn CatalogDiagnostic::not_equal(Self, Self) -> Bool
 pub fn CatalogDiagnostic::severity(Self) -> DiagnosticSeverity
 pub fn CatalogDiagnostic::summary(Self) -> String
 pub fn CatalogDiagnostic::template_name(Self) -> String
+pub fn CatalogDiagnostic::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogHealthReport {
   compile : CatalogCompileReport
@@ -135,6 +146,7 @@ pub fn CatalogHealthReport::dependencies(Self) -> CatalogDependencyReport
 pub fn CatalogHealthReport::diagnostics(Self) -> Array[CatalogDiagnostic]
 pub fn CatalogHealthReport::is_healthy(Self) -> Bool
 pub fn CatalogHealthReport::summary(Self) -> String
+pub fn CatalogHealthReport::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogRenderFailure {
   template_name : String
@@ -144,6 +156,7 @@ pub(all) struct CatalogRenderFailure {
 pub fn CatalogRenderFailure::job_index(Self) -> Int
 pub fn CatalogRenderFailure::message(Self) -> String
 pub fn CatalogRenderFailure::template_name(Self) -> String
+pub fn CatalogRenderFailure::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogRenderJob {
   template_name : String
@@ -152,6 +165,7 @@ pub(all) struct CatalogRenderJob {
 pub fn CatalogRenderJob::data(Self) -> Json
 pub fn CatalogRenderJob::new(String, Json) -> Self
 pub fn CatalogRenderJob::template_name(Self) -> String
+pub fn CatalogRenderJob::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogRenderOutput {
   template_name : String
@@ -165,6 +179,7 @@ pub fn CatalogRenderOutput::content(Self) -> String
 pub fn CatalogRenderOutput::job_index(Self) -> Int
 pub fn CatalogRenderOutput::length(Self) -> Int
 pub fn CatalogRenderOutput::template_name(Self) -> String
+pub fn CatalogRenderOutput::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CatalogRenderReport {
   total_jobs : Int
@@ -198,6 +213,7 @@ pub fn CatalogRenderReport::outputs(Self) -> Array[CatalogRenderOutput]
 pub fn CatalogRenderReport::success_count(Self) -> Int
 pub fn CatalogRenderReport::successful_template_names(Self) -> Array[String]
 pub fn CatalogRenderReport::summary(Self) -> String
+pub fn CatalogRenderReport::to_repr(Self) -> @debug.Repr
 pub fn CatalogRenderReport::total_jobs(Self) -> Int
 pub fn CatalogRenderReport::total_output_length(Self) -> Int
 
@@ -208,6 +224,7 @@ pub(all) struct CompatibilityCase {
   expected : String
 } derive(@debug.Debug)
 pub fn CompatibilityCase::new(String, String, Json, String) -> Self
+pub fn CompatibilityCase::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CompatibilityResult {
   name : String
@@ -216,6 +233,7 @@ pub(all) struct CompatibilityResult {
   expected : String
   error : String
 } derive(@debug.Debug)
+pub fn CompatibilityResult::to_repr(Self) -> @debug.Repr
 
 pub struct Context {
   stack : Array[Json]
@@ -230,12 +248,18 @@ pub(all) enum DiagnosticSeverity {
   Warning
   Info
 } derive(Eq, @debug.Debug)
+pub fn DiagnosticSeverity::equal(Self, Self) -> Bool
+pub fn DiagnosticSeverity::not_equal(Self, Self) -> Bool
+pub fn DiagnosticSeverity::to_repr(Self) -> @debug.Repr
 
 pub(all) enum MissingPartialPolicy {
   Empty
   Error
   Preserve
 } derive(Eq, @debug.Debug)
+pub fn MissingPartialPolicy::equal(Self, Self) -> Bool
+pub fn MissingPartialPolicy::not_equal(Self, Self) -> Bool
+pub fn MissingPartialPolicy::to_repr(Self) -> @debug.Repr
 
 pub(all) enum Node {
   TextNode(String)
@@ -243,6 +267,9 @@ pub(all) enum Node {
   SectionNode(String, Array[Node], Bool)
   PartialNode(String, String)
 } derive(Eq, @debug.Debug)
+pub fn Node::equal(Self, Self) -> Bool
+pub fn Node::not_equal(Self, Self) -> Bool
+pub fn Node::to_repr(Self) -> @debug.Repr
 
 pub(all) struct PartialStore {
   sources : Map[String, String]
@@ -259,6 +286,7 @@ pub fn PartialStore::render(Self, String, Json) -> String raise TemplateError
 pub fn PartialStore::render_with_options(Self, String, Json, RenderOptions) -> String raise TemplateError
 pub fn PartialStore::set(Self, String, String) -> Unit
 pub fn PartialStore::stats(Self, String) -> TemplateStats raise TemplateError
+pub fn PartialStore::to_repr(Self) -> @debug.Repr
 pub fn PartialStore::validate(Self) -> Array[TemplateDiagnostic]
 
 pub(all) struct RenderOptions {
@@ -272,12 +300,15 @@ pub(all) struct RenderOptions {
 } derive(Eq, @debug.Debug)
 pub fn RenderOptions::default() -> Self
 pub fn RenderOptions::detect_partial_cycles(Self) -> Bool
+pub fn RenderOptions::equal(Self, Self) -> Bool
 pub fn RenderOptions::escape_html(Self) -> Bool
 pub fn RenderOptions::max_nesting_depth(Self) -> Int
 pub fn RenderOptions::max_output_length(Self) -> Int
 pub fn RenderOptions::max_partial_depth(Self) -> Int
 pub fn RenderOptions::missing_partial(Self) -> MissingPartialPolicy
+pub fn RenderOptions::not_equal(Self, Self) -> Bool
 pub fn RenderOptions::standalone_lines(Self) -> Bool
+pub fn RenderOptions::to_repr(Self) -> @debug.Repr
 pub fn RenderOptions::with_escape_html(Self, Bool) -> Self
 pub fn RenderOptions::with_max_nesting_depth(Self, Int) -> Self
 pub fn RenderOptions::with_max_output_length(Self, Int) -> Self
@@ -298,6 +329,7 @@ pub fn Template::render_with_options(Self, Json, RenderOptions) -> String raise 
 pub fn Template::render_with_options_and_partials(Self, Json, Map[String, String], RenderOptions) -> String raise TemplateError
 pub fn Template::source_text(Self) -> String
 pub fn Template::stats(Self) -> TemplateStats
+pub fn Template::to_repr(Self) -> @debug.Repr
 pub fn Template::top_level_node_count(Self) -> Int
 
 pub struct TemplateCatalog {
@@ -341,6 +373,7 @@ pub fn TemplateCatalog::stats(Self, String) -> TemplateStats raise TemplateError
 pub fn TemplateCatalog::stats_all(Self) -> Array[(String, TemplateStats)] raise TemplateError
 pub fn TemplateCatalog::template(Self, String) -> Template raise TemplateError
 pub fn TemplateCatalog::template_count(Self) -> Int
+pub fn TemplateCatalog::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TemplateDiagnostic {
   severity : DiagnosticSeverity
@@ -349,21 +382,30 @@ pub(all) struct TemplateDiagnostic {
   line : Int
   column : Int
 } derive(Eq, @debug.Debug)
+pub fn TemplateDiagnostic::equal(Self, Self) -> Bool
+pub fn TemplateDiagnostic::not_equal(Self, Self) -> Bool
 pub fn TemplateDiagnostic::summary(Self) -> String
+pub fn TemplateDiagnostic::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TemplateEntry {
   name : String
   source : String
 } derive(Eq, @debug.Debug)
+pub fn TemplateEntry::equal(Self, Self) -> Bool
 pub fn TemplateEntry::name(Self) -> String
 pub fn TemplateEntry::new(String, String) -> Self
+pub fn TemplateEntry::not_equal(Self, Self) -> Bool
 pub fn TemplateEntry::source(Self) -> String
+pub fn TemplateEntry::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TemplatePosition {
   index : Int
   line : Int
   column : Int
 } derive(Eq, @debug.Debug)
+pub fn TemplatePosition::equal(Self, Self) -> Bool
+pub fn TemplatePosition::not_equal(Self, Self) -> Bool
+pub fn TemplatePosition::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TemplateStats {
   node_count : Int
@@ -377,8 +419,11 @@ pub(all) struct TemplateStats {
   has_custom_delimiters : Bool
 } derive(Eq, @debug.Debug)
 pub fn TemplateStats::complexity_score(Self) -> Int
+pub fn TemplateStats::equal(Self, Self) -> Bool
 pub fn TemplateStats::is_empty(Self) -> Bool
+pub fn TemplateStats::not_equal(Self, Self) -> Bool
 pub fn TemplateStats::summary(Self) -> String
+pub fn TemplateStats::to_repr(Self) -> @debug.Repr
 
 pub(all) enum Token {
   Text(String)
@@ -390,6 +435,9 @@ pub(all) enum Token {
   Partial(String)
   Comment(String)
 } derive(Eq, @debug.Debug)
+pub fn Token::equal(Self, Self) -> Bool
+pub fn Token::not_equal(Self, Self) -> Bool
+pub fn Token::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

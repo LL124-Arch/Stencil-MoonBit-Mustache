@@ -45,7 +45,7 @@ pub fn RenderOptions::with_escape_html(
   self : RenderOptions,
   enabled : Bool,
 ) -> RenderOptions {
-  { ..self, escape_html: enabled }
+  { ..self, escape_html: enabled, }
 }
 
 ///|
@@ -54,7 +54,7 @@ pub fn RenderOptions::with_standalone_lines(
   self : RenderOptions,
   enabled : Bool,
 ) -> RenderOptions {
-  { ..self, standalone_lines: enabled }
+  { ..self, standalone_lines: enabled, }
 }
 
 ///|
@@ -63,7 +63,7 @@ pub fn RenderOptions::with_max_nesting_depth(
   self : RenderOptions,
   limit : Int,
 ) -> RenderOptions {
-  { ..self, max_nesting_depth: normalize_limit(limit) }
+  { ..self, max_nesting_depth: normalize_limit(limit), }
 }
 
 ///|
@@ -72,7 +72,7 @@ pub fn RenderOptions::with_max_partial_depth(
   self : RenderOptions,
   limit : Int,
 ) -> RenderOptions {
-  { ..self, max_partial_depth: normalize_limit(limit) }
+  { ..self, max_partial_depth: normalize_limit(limit), }
 }
 
 ///|
@@ -81,7 +81,7 @@ pub fn RenderOptions::with_max_output_length(
   self : RenderOptions,
   limit : Int,
 ) -> RenderOptions {
-  { ..self, max_output_length: normalize_limit(limit) }
+  { ..self, max_output_length: normalize_limit(limit), }
 }
 
 ///|
@@ -90,7 +90,7 @@ pub fn RenderOptions::with_missing_partial(
   self : RenderOptions,
   policy : MissingPartialPolicy,
 ) -> RenderOptions {
-  { ..self, missing_partial: policy }
+  { ..self, missing_partial: policy, }
 }
 
 ///|
@@ -99,7 +99,7 @@ pub fn RenderOptions::with_partial_cycle_detection(
   self : RenderOptions,
   enabled : Bool,
 ) -> RenderOptions {
-  { ..self, detect_partial_cycles: enabled }
+  { ..self, detect_partial_cycles: enabled, }
 }
 
 ///|
